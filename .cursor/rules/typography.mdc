@@ -1,0 +1,267 @@
+---
+description: Enforce and apply for all UI components
+alwaysApply: true
+---
+# MetaMask Design System - Typography Tokens
+
+This document defines the official typography tokens for the MetaMask design system. All components must use these values for consistent text styling.
+
+## Usage
+
+Always use design tokens for typography. Never use raw pixel values directly.
+
+```tsx
+import { typography } from "@/lib/tokens";
+
+// ✅ Correct
+style={{
+  fontSize: typography.fontSize.base,
+  fontWeight: typography.fontWeight.medium,
+  lineHeight: `${typography.lineHeight.base}px`,
+  fontFamily: typography.fontFamily.sans,
+}}
+
+// ❌ Incorrect
+style={{
+  fontSize: 16,
+  fontWeight: 500,
+  lineHeight: "24px",
+  fontFamily: "Inter, sans-serif",
+}}
+```
+
+## Font Families
+
+| Token | Font | Usage |
+|-------|------|-------|
+| `fontFamily.sans` | "Inter", system-ui, sans-serif | All UI text |
+
+## Font Sizes
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `fontSize.xs` | 12px | Tiny labels, badges, timestamps |
+| `fontSize.sm` | 14px | Secondary text, descriptions, captions |
+| `fontSize.base` | 16px | Body text, buttons, inputs |
+| `fontSize.lg` | 18px | Section headers, large labels |
+| `fontSize.xl` | 20px | Subheadings |
+| `fontSize['2xl']` | 24px | Page titles |
+| `fontSize['3xl']` | 32px | Large headings |
+| `fontSize['4xl']` | 40px | Hero text, balances |
+| `fontSize['5xl']` | 48px | Extra large display text |
+
+## Font Weights
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `fontWeight.normal` | 400 | Body text, descriptions |
+| `fontWeight.medium` | 500 | Emphasized text, labels, buttons |
+| `fontWeight.semibold` | 600 | Headings, important UI elements |
+| `fontWeight.bold` | 700 | Strong emphasis, CTAs |
+
+## Line Heights
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `lineHeight.xs` | 16px | Tight text, badges |
+| `lineHeight.sm` | 20px | Small text |
+| `lineHeight.base` | 24px | Body text |
+| `lineHeight.lg` | 28px | Large text |
+| `lineHeight.xl` | 32px | Headings |
+| `lineHeight['2xl']` | 40px | Large headings |
+| `lineHeight['3xl']` | 48px | Display text |
+
+## Typography Presets
+
+### Headings
+
+```tsx
+// Page title
+style={{
+  fontSize: typography.fontSize['2xl'],
+  fontWeight: typography.fontWeight.semibold,
+  lineHeight: `${typography.lineHeight.xl}px`,
+  color: c.text.default,
+}}
+
+// Section title
+style={{
+  fontSize: typography.fontSize.lg,
+  fontWeight: typography.fontWeight.semibold,
+  lineHeight: `${typography.lineHeight.lg}px`,
+  color: c.text.default,
+}}
+
+// Subsection title
+style={{
+  fontSize: typography.fontSize.base,
+  fontWeight: typography.fontWeight.semibold,
+  lineHeight: `${typography.lineHeight.base}px`,
+  color: c.text.default,
+}}
+```
+
+### Body Text
+
+```tsx
+// Primary body
+style={{
+  fontSize: typography.fontSize.base,
+  fontWeight: typography.fontWeight.normal,
+  lineHeight: `${typography.lineHeight.base}px`,
+  color: c.text.default,
+}}
+
+// Secondary body
+style={{
+  fontSize: typography.fontSize.sm,
+  fontWeight: typography.fontWeight.normal,
+  lineHeight: `${typography.lineHeight.sm}px`,
+  color: c.text.alternative,
+}}
+
+// Caption/helper text
+style={{
+  fontSize: typography.fontSize.xs,
+  fontWeight: typography.fontWeight.normal,
+  lineHeight: `${typography.lineHeight.xs}px`,
+  color: c.text.muted,
+}}
+```
+
+### Interactive Elements
+
+```tsx
+// Button text
+style={{
+  fontSize: typography.fontSize.base,
+  fontWeight: typography.fontWeight.medium,
+  lineHeight: `${typography.lineHeight.base}px`,
+}}
+
+// Link text
+style={{
+  fontSize: typography.fontSize.sm,
+  fontWeight: typography.fontWeight.medium,
+  color: c.primary.default,
+}}
+
+// Input text
+style={{
+  fontSize: typography.fontSize.base,
+  fontWeight: typography.fontWeight.normal,
+  lineHeight: `${typography.lineHeight.base}px`,
+}}
+
+// Input label
+style={{
+  fontSize: typography.fontSize.sm,
+  fontWeight: typography.fontWeight.medium,
+  color: c.text.alternative,
+}}
+```
+
+### Special Text
+
+```tsx
+// Balance/amount display
+style={{
+  fontSize: typography.fontSize['3xl'],
+  fontWeight: typography.fontWeight.semibold,
+  lineHeight: `${typography.lineHeight['2xl']}px`,
+  color: c.text.default,
+}}
+
+// Badge text
+style={{
+  fontSize: typography.fontSize.xs,
+  fontWeight: typography.fontWeight.semibold,
+  lineHeight: `${typography.lineHeight.xs}px`,
+}}
+
+// Token symbol
+style={{
+  fontSize: typography.fontSize.base,
+  fontWeight: typography.fontWeight.medium,
+  color: c.text.default,
+}}
+
+// Timestamp
+style={{
+  fontSize: typography.fontSize.xs,
+  fontWeight: typography.fontWeight.normal,
+  color: c.text.muted,
+}}
+```
+
+## Text Truncation
+
+For long text that may overflow:
+
+```tsx
+// Single line truncation
+style={{
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+}}
+
+// Multi-line truncation (CSS)
+style={{
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+}}
+```
+
+## Numeric Formatting
+
+For currency and numbers:
+
+```tsx
+// Currency display
+const formatCurrency = (value: number) => 
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(value);
+
+// Crypto balance
+const formatBalance = (value: number, decimals = 4) =>
+  value.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
+  });
+
+// Percentage
+const formatPercent = (value: number) =>
+  `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+```
+
+## Component Guidelines
+
+### Buttons
+- Use `fontSize.base` with `fontWeight.medium`
+- Small buttons use `fontSize.sm`
+
+### Cards
+- Title: `fontSize.lg` or `fontSize.base` with `fontWeight.semibold`
+- Description: `fontSize.sm` with `fontWeight.normal`
+
+### Lists
+- Primary text: `fontSize.base` with `fontWeight.medium`
+- Secondary text: `fontSize.sm` with `fontWeight.normal`
+
+### Navigation
+- Active: `fontSize.sm` with `fontWeight.medium`
+- Inactive: `fontSize.sm` with `fontWeight.normal`
+
+### Badges
+- Use `fontSize.xs` with `fontWeight.semibold`
+- Uppercase for status badges
+
+### Form Elements
+- Labels: `fontSize.sm` with `fontWeight.medium`
+- Inputs: `fontSize.base` with `fontWeight.normal`
+- Helpers: `fontSize.xs` with `fontWeight.normal`

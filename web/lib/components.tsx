@@ -276,6 +276,342 @@ export function TokenCell({
   );
 }
 
+// TokenList Component - List of tokens with header
+// Composed from: TokenCell
+// Uses tokens: background.section, text.default, text.alternative, spacing, radius
+export function TokenList({
+  title = "Tokens",
+  tokens = [],
+  seeAllLabel = "See all",
+  onSeeAllClick,
+  showSeeAll = true,
+  maxItems = 3,
+  isLoading = false,
+}: {
+  title?: string;
+  tokens?: Array<{
+    symbol: string;
+    name: string;
+    balance: string;
+    value: string;
+    change: string;
+    changePositive: boolean;
+    network?: "ethereum" | "polygon" | "arbitrum" | "optimism";
+  }>;
+  seeAllLabel?: string;
+  onSeeAllClick?: () => void;
+  showSeeAll?: boolean;
+  maxItems?: number;
+  isLoading?: boolean;
+}) {
+  const c = useColors();
+  
+  // Default tokens if none provided
+  const defaultTokens = [
+    { symbol: "ETH", name: "Ethereum", balance: "1.45", value: "$2,450.32", change: "+2.5%", changePositive: true, network: "ethereum" as const },
+    { symbol: "USDC", name: "USD Coin", balance: "500.00", value: "$500.00", change: "+0.01%", changePositive: true, network: "ethereum" as const },
+    { symbol: "MATIC", name: "Polygon", balance: "250.00", value: "$234.56", change: "-4.2%", changePositive: false, network: "polygon" as const },
+  ];
+  
+  const displayTokens = tokens.length > 0 ? tokens.slice(0, maxItems) : defaultTokens.slice(0, maxItems);
+
+  return (
+    <div style={{ width: "100%", maxWidth: 375, fontFamily: typography.fontFamily.sans }}>
+      {/* Header */}
+      <div style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "space-between",
+        marginBottom: spacing[2],
+        paddingLeft: spacing[1],
+        paddingRight: spacing[1],
+      }}>
+        <span style={{
+          fontSize: typography.fontSize.base,
+          fontWeight: typography.fontWeight.semibold,
+          color: c.text.default,
+          lineHeight: `${typography.lineHeight.base}px`,
+        }}>
+          {title}
+        </span>
+        {showSeeAll && (
+          <button
+            onClick={onSeeAllClick}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: spacing[1],
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: typography.fontSize.sm,
+              fontWeight: typography.fontWeight.medium,
+              color: c.text.alternative,
+              lineHeight: `${typography.lineHeight.sm}px`,
+              padding: 0,
+            }}
+          >
+            {seeAllLabel}
+            <svg width={iconSize.sm} height={iconSize.sm} viewBox="0 0 24 24" fill="none">
+              <path d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41.01z" fill="currentColor"/>
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* Token Cells Container */}
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: spacing[1],
+        backgroundColor: c.background.section,
+        borderRadius: radius.lg,
+        overflow: "hidden",
+      }}>
+        {isLoading ? (
+          // Loading skeleton
+          Array.from({ length: maxItems }).map((_, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: spacing[4],
+                padding: spacing[4],
+              }}
+            >
+              <div style={{
+                width: spacing[10],
+                height: spacing[10],
+                borderRadius: radius.full,
+                backgroundColor: c.background.muted,
+              }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ width: 80, height: spacing[4], backgroundColor: c.background.muted, borderRadius: radius.sm, marginBottom: spacing[1] }} />
+                <div style={{ width: 60, height: typography.fontSize.sm, backgroundColor: c.background.muted, borderRadius: radius.sm }} />
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ width: 60, height: spacing[4], backgroundColor: c.background.muted, borderRadius: radius.sm, marginBottom: spacing[1] }} />
+                <div style={{ width: spacing[10], height: typography.fontSize.sm, backgroundColor: c.background.muted, borderRadius: radius.sm }} />
+              </div>
+            </div>
+          ))
+        ) : (
+          displayTokens.map((token, index) => (
+            <div key={index} style={{ padding: `${spacing[3]}px ${spacing[4]}px` }}>
+              <TokenCell
+                symbol={token.symbol}
+                name={token.name}
+                balance={token.balance}
+                value={token.value}
+                change={token.change}
+                changePositive={token.changePositive}
+                network={token.network}
+              />
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Sorting Component - Sort options drawer/panel
+// Uses tokens: background.default, background.section, background.hover, text.default, text.alternative, spacing, radius
+export type SortDirection = "asc" | "desc";
+
+export interface SortOption {
+  id: string;
+  label: string;
+  supportsDirection?: boolean;
+  defaultDirection?: SortDirection;
+  ascLabel?: string;
+  descLabel?: string;
+}
+
+export function Sorting({
+  title = "Sort by",
+  options = [],
+  value = "",
+  direction = "desc",
+  onApply,
+  onClose,
+  showApplyButton = true,
+}: {
+  title?: string;
+  options?: SortOption[];
+  value?: string;
+  direction?: SortDirection;
+  onApply?: (value: string, direction: SortDirection) => void;
+  onClose?: () => void;
+  showApplyButton?: boolean;
+}) {
+  const c = useColors();
+  const [selectedId, setSelectedId] = useState(value);
+  const [selectedDirection, setSelectedDirection] = useState<SortDirection>(direction);
+
+  // Default options if none provided
+  const defaultOptions: SortOption[] = [
+    { id: "name", label: "Name", supportsDirection: true, ascLabel: "A to Z", descLabel: "Z to A" },
+    { id: "balance", label: "Balance", supportsDirection: true, ascLabel: "Low to high", descLabel: "High to low" },
+    { id: "value", label: "Value", supportsDirection: true, ascLabel: "Low to high", descLabel: "High to low" },
+    { id: "change", label: "Price change", supportsDirection: true, ascLabel: "Low to high", descLabel: "High to low" },
+  ];
+
+  const displayOptions = options.length > 0 ? options : defaultOptions;
+
+  const handleOptionClick = (option: SortOption) => {
+    if (selectedId === option.id && option.supportsDirection) {
+      // Toggle direction if already selected
+      setSelectedDirection(prev => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      // Select new option
+      setSelectedId(option.id);
+      if (option.supportsDirection) {
+        setSelectedDirection(option.defaultDirection || "desc");
+      }
+    }
+  };
+
+  const handleApply = () => {
+    onApply?.(selectedId, selectedDirection);
+  };
+
+  const getDirectionLabel = (option: SortOption, dir: SortDirection) => {
+    if (dir === "asc") return option.ascLabel || "Low to high";
+    return option.descLabel || "High to low";
+  };
+
+  return (
+    <div style={{
+      width: "100%",
+      maxWidth: 375,
+      backgroundColor: c.background.default,
+      borderRadius: `${radius.xl}px ${radius.xl}px 0 0`,
+      fontFamily: typography.fontFamily.sans,
+      overflow: "hidden",
+    }}>
+      {/* Header */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: `${spacing[4]}px ${spacing[4]}px ${spacing[2]}px`,
+      }}>
+        <div style={{ width: spacing[8] }} />
+        <span style={{
+          fontSize: typography.fontSize.base,
+          fontWeight: typography.fontWeight.semibold,
+          color: c.text.default,
+          lineHeight: `${typography.lineHeight.base}px`,
+          textAlign: "center",
+        }}>
+          {title}
+        </span>
+        {onClose && (
+          <button
+            onClick={onClose}
+            style={{
+              width: spacing[8],
+              height: spacing[8],
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: radius.full,
+              color: c.text.default,
+            }}
+          >
+            <svg width={iconSize.md} height={iconSize.md} viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth={2} strokeLinecap="round"/>
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* Options */}
+      <div style={{ padding: spacing[4], display: "flex", flexDirection: "column", gap: spacing[2] }}>
+        {displayOptions.map((option) => {
+          const isSelected = selectedId === option.id;
+          return (
+            <button
+              key={option.id}
+              onClick={() => handleOptionClick(option)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                padding: `${spacing[3]}px ${spacing[4]}px`,
+                backgroundColor: isSelected ? c.background.subsection : "transparent",
+                border: "none",
+                borderRadius: radius.lg,
+                cursor: "pointer",
+                textAlign: "left",
+                transition: "background-color 150ms ease",
+              }}
+            >
+              <span style={{
+                fontSize: typography.fontSize.base,
+                fontWeight: typography.fontWeight.medium,
+                color: isSelected ? c.text.default : c.text.alternative,
+              }}>
+                {option.label}
+              </span>
+              {isSelected && option.supportsDirection && (
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: spacing[1],
+                  fontSize: typography.fontSize.sm,
+                  lineHeight: `${typography.lineHeight.sm}px`,
+                  color: c.text.alternative,
+                }}>
+                  <span>{getDirectionLabel(option, selectedDirection)}</span>
+                  <svg width={iconSize.sm} height={iconSize.sm} viewBox="0 0 24 24" fill="none">
+                    {selectedDirection === "desc" ? (
+                      <path d="M12 4v16m0 0l-6-6m6 6l6-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+                    ) : (
+                      <path d="M12 20V4m0 0l6 6m-6-6l-6 6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+                    )}
+                  </svg>
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Apply Button */}
+      {showApplyButton && (
+        <div style={{ padding: `${spacing[2]}px ${spacing[4]}px ${spacing[6]}px` }}>
+          <button
+            onClick={handleApply}
+            style={{
+              width: "100%",
+              height: componentTokens.button.heightLg,
+              backgroundColor: c.primary.default,
+              color: c.primary.inverse,
+              border: "none",
+              borderRadius: radius.full,
+              fontSize: typography.fontSize.base,
+              fontWeight: typography.fontWeight.medium,
+              lineHeight: `${typography.lineHeight.base}px`,
+              cursor: "pointer",
+              transition: "background-color 150ms ease",
+              fontFamily: typography.fontFamily.sans,
+            }}
+          >
+            Apply
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Tab Header Component
 export function TabHeader({
   label = "Available balance",
@@ -4646,6 +4982,43 @@ export const componentRegistry: ComponentEntry[] = [
       { name: "Stock", description: "Stock asset with shares and tag", props: { variant: "stock", name: "Apple", symbol: "AAPL", balance: "123.456", value: "$123.45", change: "+12.90%", changePositive: true, tag: "Stock" } },
       { name: "MATIC on Polygon", description: "MATIC token on Polygon network", props: { variant: "default", name: "Polygon", symbol: "MATIC", balance: "150.5", value: "$89.25", change: "+5.2%", changePositive: true, network: "polygon" } },
       { name: "ARB on Arbitrum", description: "ARB token on Arbitrum network", props: { variant: "default", name: "Arbitrum", symbol: "ARB", balance: "500", value: "$425.00", change: "-2.1%", changePositive: false, network: "arbitrum" } },
+    ],
+  },
+  {
+    name: "Token List",
+    slug: "token-list",
+    description: "List of tokens with header and 'See all' action. Composes TokenCell components.",
+    component: TokenList,
+    defaultProps: { title: "Tokens", showSeeAll: true, seeAllLabel: "See all", maxItems: 3, isLoading: false },
+    props: [
+      { name: "title", type: "string", default: "Tokens", description: "Section title" },
+      { name: "showSeeAll", type: "boolean", default: true, description: "Show 'See all' link" },
+      { name: "seeAllLabel", type: "string", default: "See all", description: "Label for see all link" },
+      { name: "maxItems", type: "number", default: 3, description: "Maximum tokens to display" },
+      { name: "isLoading", type: "boolean", default: false, description: "Show loading skeleton" },
+    ],
+    variants: [
+      { name: "Default", description: "Token list with default tokens", props: { title: "Tokens", showSeeAll: true } },
+      { name: "Loading", description: "Loading state with skeletons", props: { title: "Tokens", isLoading: true } },
+      { name: "No See All", description: "Without see all link", props: { title: "Your Tokens", showSeeAll: false } },
+    ],
+  },
+  {
+    name: "Sorting",
+    slug: "sorting",
+    description: "Sort options panel with directional sorting support.",
+    component: Sorting,
+    defaultProps: { title: "Sort by", value: "value", direction: "desc", showApplyButton: true },
+    props: [
+      { name: "title", type: "string", default: "Sort by", description: "Panel title" },
+      { name: "value", type: "select", default: "value", options: ["name", "balance", "value", "change"], description: "Selected sort option" },
+      { name: "direction", type: "select", default: "desc", options: ["asc", "desc"], description: "Sort direction" },
+      { name: "showApplyButton", type: "boolean", default: true, description: "Show apply button" },
+    ],
+    variants: [
+      { name: "Default", description: "Sort by value descending", props: { value: "value", direction: "desc" } },
+      { name: "Name A-Z", description: "Sort by name ascending", props: { value: "name", direction: "asc" } },
+      { name: "Balance High-Low", description: "Sort by balance descending", props: { value: "balance", direction: "desc" } },
     ],
   },
   {

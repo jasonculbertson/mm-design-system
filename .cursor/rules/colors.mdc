@@ -1,0 +1,173 @@
+---
+description: Enforce and apply for all UI components
+alwaysApply: true
+---
+# MetaMask Design System - Color Tokens
+
+This document defines the official color tokens for the MetaMask design system. All components must use these tokens for consistent theming.
+
+## Usage
+
+Always use design tokens for colors. Never use raw hex values directly.
+
+```tsx
+// ✅ Correct
+const c = useColors();
+style={{ backgroundColor: c.background.section }}
+style={{ color: c.text.default }}
+style={{ borderColor: c.border.muted }}
+
+// ❌ Incorrect
+style={{ backgroundColor: '#31333A' }}
+style={{ color: '#FFFFFF' }}
+```
+
+## Color Hook
+
+Use the `useColors()` hook to access theme-aware colors:
+
+```tsx
+import { useColors } from "@/lib/components";
+
+function MyComponent() {
+  const c = useColors();
+  
+  return (
+    <div style={{ 
+      backgroundColor: c.background.section,
+      color: c.text.default 
+    }}>
+      Content
+    </div>
+  );
+}
+```
+
+## Dark Theme Colors (Default)
+
+### Backgrounds
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `background.default` | #222325 | Main app background |
+| `background.alternative` | #121314 | Sunken areas, modals backdrop |
+| `background.section` | #31333A | Cards, elevated surfaces |
+| `background.subsection` | #3D4049 | Nested containers |
+| `background.muted` | #474951 | Subtle backgrounds, disabled states |
+| `background.hover` | #3D4049 | Interactive hover state |
+| `background.pressed` | #474951 | Interactive pressed state |
+
+### Text
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `text.default` | #FFFFFF | Primary text, headings |
+| `text.alternative` | #858B9A | Secondary text, descriptions |
+| `text.muted` | #686E7D | Disabled text, placeholders |
+
+### Primary (Interactive)
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `primary.default` | #8B99FF | Buttons, links, active states |
+| `primary.alternative` | #A8B3FF | Hover state |
+| `primary.muted` | #8B99FF26 | Primary backgrounds (15% opacity) |
+| `primary.inverse` | #121314 | Text on primary background |
+
+### Semantic Colors
+
+#### Error
+| Token | Value | Usage |
+|-------|-------|-------|
+| `error.default` | #FF7584 | Error states, destructive actions |
+| `error.muted` | #FF758426 | Error backgrounds |
+| `error.inverse` | #121314 | Text on error background |
+
+#### Success
+| Token | Value | Usage |
+|-------|-------|-------|
+| `success.default` | #4AE39E | Success states, positive changes |
+| `success.muted` | #4AE39E26 | Success backgrounds |
+| `success.inverse` | #121314 | Text on success background |
+
+#### Warning
+| Token | Value | Usage |
+|-------|-------|-------|
+| `warning.default` | #FFD33D | Warning states |
+| `warning.muted` | #FFD33D26 | Warning backgrounds |
+| `warning.inverse` | #121314 | Text on warning background |
+
+#### Info
+| Token | Value | Usage |
+|-------|-------|-------|
+| `info.default` | #8B99FF | Informational states |
+| `info.muted` | #8B99FF26 | Info backgrounds |
+
+### Borders
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `border.default` | #9CA1AF | Standard borders |
+| `border.muted` | #858B9A33 | Subtle borders (20% opacity) |
+
+### Icons
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `icon.default` | #858B9A | Default icon color |
+| `icon.alternative` | #686E7D | Secondary icons |
+| `icon.muted` | #474951 | Disabled icons |
+
+### Overlay
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `overlay.default` | #00000066 | Modal overlays (40% opacity) |
+
+## Interactive States
+
+For interactive elements, use these patterns:
+
+```tsx
+// Button hover/pressed states
+style={{
+  backgroundColor: isPressed 
+    ? c.background.pressed 
+    : isHovered 
+      ? c.background.hover 
+      : c.background.section
+}}
+
+// Primary button states  
+style={{
+  backgroundColor: isHovered 
+    ? c.primary.alternative 
+    : c.primary.default
+}}
+```
+
+## Accessibility Guidelines
+
+1. **Contrast Ratios**: All text must meet WCAG 2.1 AA standards
+   - Normal text: 4.5:1 minimum
+   - Large text: 3:1 minimum
+
+2. **Don't rely on color alone**: Use icons, text, or patterns alongside color
+
+3. **Test in both themes**: Ensure colors work in light and dark modes
+
+## External Brand Colors (Exceptions)
+
+Network colors are acceptable exceptions to the token system:
+
+```tsx
+const networkColors = {
+  ethereum: "#627EEA",
+  polygon: "#8247E5", 
+  arbitrum: "#28A0F0",
+  optimism: "#FF0420",
+  avalanche: "#E84142",
+  bnb: "#F0B90B",
+  base: "#0052FF",
+};
+```

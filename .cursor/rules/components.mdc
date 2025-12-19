@@ -1,0 +1,205 @@
+---
+description: Guide for using MetaMask Design System components
+alwaysApply: true
+---
+# MetaMask Design System - Components
+
+This document lists all available components in the MetaMask Design System. Import them from `@/lib/components`.
+
+## Component Architecture
+
+```
+1. TOKENS (from ./tokens.ts)
+   └── colors, typography, spacing, radius, shadow
+   └── Single source of truth for all design values
+
+2. BASE COMPONENTS (primitives)
+   └── Button, Input, Card, Badge, Avatar, Switch, etc.
+   └── Building blocks - use tokens directly
+
+3. COMPLEX COMPONENTS (composed from base)
+   └── HubHeader, TokenCell, TokenList, AccountPicker, etc.
+   └── Compose base components + add layout/business logic
+
+4. SCREENS (composed from complex components)
+   └── WalletHome, Settings, Send, Receive, etc.
+```
+
+## Available Components
+
+### Primitives
+
+| Component | Description | Key Props |
+|-----------|-------------|-----------|
+| `Button` | Primary interactive element | `label`, `variant`, `size`, `disabled`, `loading` |
+| `Input` | Text input field | `placeholder`, `value`, `label`, `error`, `disabled` |
+| `Card` | Container for content | `title`, `description`, `variant` |
+| `Badge` | Status/label indicator | `label`, `variant`, `size` |
+| `Avatar` | User/account avatar | `name`, `size`, `showBadge` |
+| `Switch` | Toggle control | `value`, `label`, `disabled` |
+| `Banner` | Alert/notice banner | `title`, `description`, `variant`, `dismissible` |
+| `Skeleton` | Loading placeholder | `variant`, `width`, `height` |
+| `Dialog` | Modal dialog | `open`, `title`, `description`, `primaryAction` |
+| `Select` | Dropdown selector | `label`, `value`, `placeholder` |
+| `Chip` | Selectable chip/tag | `label`, `selected`, `disabled` |
+| `Toast` | Notification toast | `message`, `variant`, `action` |
+| `ProgressBar` | Progress indicator | `progress`, `variant`, `showLabel` |
+| `Divider` | Visual separator | `variant` |
+| `Checkbox` | Checkbox input | `checked`, `label`, `disabled` |
+| `Tabs` | Tab navigation | `tabs`, `activeIndex`, `variant` |
+| `TextArea` | Multi-line input | `placeholder`, `label`, `rows` |
+| `Radio` | Radio button | `selected`, `label`, `disabled` |
+| `RadioGroup` | Radio button group | `options`, `selected`, `disabled` |
+| `Spinner` | Loading spinner | `size`, `variant` |
+| `Tooltip` | Hover tooltip | `text`, `position` |
+| `Link` | Clickable link | `text`, `variant`, `disabled` |
+| `Slider` | Range slider | `value`, `min`, `max`, `showValue` |
+| `Accordion` | Expandable section | `title`, `content`, `expanded` |
+| `BottomSheet` | Bottom drawer | `title`, `visible`, `hasHandle` |
+| `Popover` | Popup content | `trigger`, `content`, `visible` |
+| `SegmentedControl` | Segmented selector | `segments`, `selected`, `disabled` |
+| `PasswordInput` | Password field | `placeholder`, `value`, `label`, `showPassword` |
+| `SearchBar` | Search input | `placeholder`, `value`, `showClear` |
+
+### MetaMask Components
+
+| Component | Description | Key Props |
+|-----------|-------------|-----------|
+| `HubHeader` | Balance display with actions | `balance`, `label`, `primaryAction`, `secondaryAction` |
+| `AccountPicker` | Account selector | `name`, `connected`, `loading` |
+| `TokenCell` | Token/asset row | `symbol`, `name`, `balance`, `value`, `change` |
+| `TokenList` | List of tokens with header | `title`, `tokens`, `showSeeAll`, `maxItems` |
+| `FooterNav` | Bottom navigation | `activeTab` |
+| `EmptyState` | Empty content placeholder | `title`, `description`, `actionLabel` |
+| `PageHeader` | Navigation header | `title`, `showBack`, `action` |
+| `SectionHeader` | Section title with action | `title`, `action` |
+| `ListItem` | Menu/settings row | `title`, `subtitle`, `leftIcon`, `showChevron` |
+| `TransactionCell` | Transaction row | `type`, `status`, `amount`, `value`, `address` |
+| `AddressDisplay` | Address with copy | `address`, `truncate`, `showCopy` |
+| `GasFeeSelector` | Gas fee picker | `selected`, `lowFee`, `mediumFee`, `highFee` |
+| `NFTCard` | NFT display card | `name`, `collection`, `price` |
+| `NetworkSelector` | Network picker | `selected`, `networks` |
+| `QRCode` | QR code display | `value`, `size`, `showValue` |
+| `StatusIndicator` | Status badge | `status`, `label`, `showPulse` |
+| `WalletConnectSession` | Connected dApp | `dappName`, `dappUrl`, `connected` |
+| `AmountInput` | Crypto amount input | `value`, `token`, `fiatValue`, `showMax` |
+| `SwapPreview` | Swap preview | `fromToken`, `toToken`, `rate`, `fee` |
+| `ConfirmationSheet` | Confirm transaction | `title`, `amount`, `recipient`, `fee` |
+| `Identicon` | Address avatar | `address`, `size` |
+| `ChainBadge` | Network indicator | `chain`, `showName` |
+| `Stepper` | Step progress | `steps`, `current`, `variant` |
+| `NotificationCell` | Notification row | `title`, `message`, `timestamp`, `type` |
+| `PayWith` | Token payment selector | `tokenSymbol`, `tokenName`, `balance`, `network` |
+| `Sorting` | Sort options panel | `title`, `options`, `value`, `direction`, `onApply` |
+| `AvatarToken` | Token avatar with network badge | `name`, `size`, `showNetworkBadge`, `network` |
+| `AvatarNetwork` | Network logo avatar | `name`, `size` |
+
+## Usage Examples
+
+### Basic Component
+
+```tsx
+import { Button, useColors } from "@/lib/components";
+
+function MyScreen() {
+  const c = useColors();
+  
+  return (
+    <Button 
+      label="Send" 
+      variant="primary" 
+      onClick={() => console.log("clicked")} 
+    />
+  );
+}
+```
+
+### Token List
+
+```tsx
+import { TokenList } from "@/lib/components";
+
+function WalletScreen() {
+  const tokens = [
+    { symbol: "ETH", name: "Ethereum", balance: "1.5", value: "$3,000", change: "+2.5%", changePositive: true },
+    { symbol: "USDC", name: "USD Coin", balance: "500", value: "$500", change: "0%", changePositive: true },
+  ];
+  
+  return (
+    <TokenList 
+      title="Tokens"
+      tokens={tokens}
+      showSeeAll={true}
+      onSeeAllClick={() => console.log("See all")}
+    />
+  );
+}
+```
+
+### Sorting Component
+
+```tsx
+import { Sorting, type SortOption } from "@/lib/components";
+
+function TokensScreen() {
+  const sortOptions: SortOption[] = [
+    { id: "name", label: "Name", supportsDirection: true, ascLabel: "A to Z", descLabel: "Z to A" },
+    { id: "value", label: "Value", supportsDirection: true },
+    { id: "change", label: "Price change", supportsDirection: true },
+  ];
+  
+  return (
+    <Sorting
+      title="Sort by"
+      options={sortOptions}
+      value="value"
+      direction="desc"
+      onApply={(value, direction) => console.log(value, direction)}
+    />
+  );
+}
+```
+
+## Component Guidelines
+
+### Always Use Design Tokens
+
+```tsx
+// ✅ Correct
+import { spacing, radius, typography } from "@/lib/tokens";
+
+style={{
+  padding: spacing[4],
+  borderRadius: radius.lg,
+  fontSize: typography.fontSize.base,
+}}
+
+// ❌ Incorrect
+style={{
+  padding: 16,
+  borderRadius: 12,
+  fontSize: 16,
+}}
+```
+
+### Use Theme Colors
+
+```tsx
+const c = useColors();
+
+style={{
+  backgroundColor: c.background.section,
+  color: c.text.default,
+  borderColor: c.border.muted,
+}}
+```
+
+### Mobile-First Layout
+
+```tsx
+// Constrain to mobile width
+style={{
+  width: "100%",
+  maxWidth: 375,
+}}
+```

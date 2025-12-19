@@ -1,0 +1,259 @@
+---
+description: Guide for adding new components to the design system
+alwaysApply: true
+---
+# Adding New Components
+
+This guide explains how to add new components to the MetaMask Design System. Follow this checklist to ensure consistency.
+
+## File Location
+
+All components are in `web/lib/components.tsx`.
+
+## Step 1: Create the Component
+
+Use design tokens from the tokens file:
+
+- **Colors**: Use `useColors()` hook for theme-aware colors
+- **Typography**: Use `typography.fontSize.*`, `typography.fontWeight.*`
+- **Layout**: Use `spacing[*]` and `radius.*` tokens
+
+```tsx
+// web/lib/components.tsx
+
+export function MyComponent({
+  title = "Default Title",
+  variant = "default",
+  onClick,
+}: {
+  title?: string;
+  variant?: "default" | "primary" | "danger";
+  onClick?: () => void;
+}) {
+  const c = useColors();
+  
+  return (
+    <div
+      style={{
+        // Use design tokens, never raw values
+        padding: spacing[4],
+        borderRadius: radius.lg,
+        backgroundColor: c.background.section,
+        fontFamily: typography.fontFamily.sans,
+      }}
+      onClick={onClick}
+    >
+      <span
+        style={{
+          fontSize: typography.fontSize.base,
+          fontWeight: typography.fontWeight.medium,
+          color: c.text.default,
+          lineHeight: `${typography.lineHeight.base}px`,
+        }}
+      >
+        {title}
+      </span>
+    </div>
+  );
+}
+```
+
+## Required Patterns
+
+1. **Always use `useColors()` hook** for theme-aware colors
+2. **Always use design tokens** - never raw Tailwind values or pixel values
+3. **Add JSDoc comments** to props with `?:` for optional props
+4. **Provide sensible defaults** for all optional props
+5. **Use semantic color tokens** (e.g., `c.text.default` not `c.text.white`)
+
+## Step 2: Add to Exports
+
+Components are automatically exported from `web/lib/components.tsx`. Just add your function and it's available.
+
+## Design Token Quick Reference
+
+### Colors (from `useColors()`)
+
+```tsx
+const c = useColors();
+
+// Backgrounds
+c.background.default      // Main background
+c.background.section      // Cards, elevated surfaces
+c.background.subsection   // Nested containers
+c.background.muted        // Disabled states
+c.background.hover        // Hover state
+c.background.pressed      // Pressed state
+
+// Text
+c.text.default            // Primary text
+c.text.alternative        // Secondary text
+c.text.muted              // Disabled text
+
+// Borders
+c.border.default          // Standard borders
+c.border.muted            // Subtle borders
+
+// Semantic
+c.primary.default         // Primary actions
+c.error.default           // Error states
+c.warning.default         // Warning states
+c.success.default         // Success states
+```
+
+### Typography (from `typography`)
+
+```tsx
+import { typography } from "@/lib/tokens";
+
+// Font sizes
+typography.fontSize.xs    // 12px
+typography.fontSize.sm    // 14px
+typography.fontSize.base  // 16px
+typography.fontSize.lg    // 18px
+typography.fontSize.xl    // 20px
+typography.fontSize['2xl'] // 24px
+typography.fontSize['3xl'] // 32px
+
+// Font weights
+typography.fontWeight.normal   // 400
+typography.fontWeight.medium   // 500
+typography.fontWeight.semibold // 600
+typography.fontWeight.bold     // 700
+
+// Line heights
+typography.lineHeight.xs   // 16px
+typography.lineHeight.sm   // 20px
+typography.lineHeight.base // 24px
+typography.lineHeight.lg   // 28px
+```
+
+### Layout (from `spacing` and `radius`)
+
+```tsx
+import { spacing, radius } from "@/lib/tokens";
+
+// Spacing
+spacing[1]  // 4px
+spacing[2]  // 8px
+spacing[3]  // 12px
+spacing[4]  // 16px
+spacing[6]  // 24px
+spacing[8]  // 32px
+
+// Border radius
+radius.xs   // 4px
+radius.sm   // 8px
+radius.md   // 12px
+radius.lg   // 16px
+radius.xl   // 24px
+radius.full // 9999px (circles)
+```
+
+## Common Patterns
+
+### Interactive States
+
+```tsx
+const [isHovered, setIsHovered] = useState(false);
+const [isPressed, setIsPressed] = useState(false);
+
+style={{
+  backgroundColor: isPressed 
+    ? c.background.pressed 
+    : isHovered 
+      ? c.background.hover 
+      : c.background.section,
+  transition: "background-color 150ms ease",
+}}
+onMouseEnter={() => setIsHovered(true)}
+onMouseLeave={() => setIsHovered(false)}
+onMouseDown={() => setIsPressed(true)}
+onMouseUp={() => setIsPressed(false)}
+```
+
+### Responsive Containers
+
+```tsx
+// Constrain width for mobile-like preview
+style={{
+  width: "100%",
+  maxWidth: 375,
+}}
+```
+
+### Text Truncation
+
+```tsx
+style={{
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+}}
+```
+
+### Flex Layouts
+
+```tsx
+// Row with space between
+style={{
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+}}
+
+// Column stack
+style={{
+  display: "flex",
+  flexDirection: "column",
+  gap: spacing[2],
+}}
+```
+
+## Component Variants
+
+When a component has multiple variants, use a union type:
+
+```tsx
+export function Button({
+  variant = "primary",
+}: {
+  variant?: "primary" | "secondary" | "tertiary" | "danger";
+}) {
+  const c = useColors();
+  
+  const variantStyles = {
+    primary: {
+      backgroundColor: c.primary.default,
+      color: c.primary.inverse,
+    },
+    secondary: {
+      backgroundColor: c.background.section,
+      color: c.text.default,
+    },
+    tertiary: {
+      backgroundColor: "transparent",
+      color: c.primary.default,
+    },
+    danger: {
+      backgroundColor: c.error.default,
+      color: c.error.inverse,
+    },
+  };
+  
+  return (
+    <button style={variantStyles[variant]}>
+      ...
+    </button>
+  );
+}
+```
+
+## Checklist
+
+- [ ] Component uses `useColors()` for all colors
+- [ ] Component uses design tokens for spacing/radius
+- [ ] All props have default values
+- [ ] Props use TypeScript types
+- [ ] Component follows existing naming conventions
+- [ ] Component is exported from `components.tsx`

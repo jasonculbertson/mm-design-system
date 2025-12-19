@@ -793,14 +793,15 @@ function TokenCell({
   );
 }
 
-// Footer Nav Component
+// Footer Nav Component - Based on official MetaMask experimental-ds pattern
+// 5 tabs: Home, Explore, Trade (center action), Activity, Rewards
 function FooterNav({ 
-  activeTab = "wallet",
+  activeTab = "home",
   showActionSheet = false,
   onTabChange,
   onActionPress,
 }: { 
-  activeTab?: "wallet" | "swap" | "browser" | "activity" | "settings";
+  activeTab?: "home" | "explore" | "activity" | "rewards";
   showActionSheet?: boolean;
   onTabChange?: (tab: string) => void;
   onActionPress?: () => void;
@@ -808,14 +809,15 @@ function FooterNav({
   const [internalShowSheet, setInternalShowSheet] = useState(showActionSheet);
   const isSheetOpen = onActionPress ? showActionSheet : internalShowSheet;
 
+  // Official MetaMask tab structure
   const leftTabs = [
-    { id: "wallet", label: "Wallet", icon: "💰" },
-    { id: "swap", label: "Swap", icon: "⇄" },
+    { id: "home", label: "Home", icon: "🏠" },
+    { id: "explore", label: "Explore", icon: "🔍" },
   ];
 
   const rightTabs = [
-    { id: "browser", label: "Browser", icon: "🌐" },
-    { id: "activity", label: "Activity", icon: "🔔" },
+    { id: "activity", label: "Activity", icon: "🕐" },
+    { id: "rewards", label: "Rewards", icon: "🦊" },
   ];
 
   const handleActionPress = () => {
@@ -834,7 +836,7 @@ function FooterNav({
     { icon: "↑", label: "Send", color: colors.primary.default },
     { icon: "↓", label: "Receive", color: colors.success.default },
     { icon: "⇄", label: "Swap", color: colors.warning.default },
-    { icon: "⊞", label: "Scan", color: colors.info.default },
+    { icon: "⊞", label: "Buy", color: colors.info.default },
   ];
 
   return (
@@ -857,26 +859,27 @@ function FooterNav({
       )}
 
       {/* Bottom Nav Bar */}
-      <View style={footerNavStyles.container}>
+    <View style={footerNavStyles.container}>
         {/* Left tabs */}
         {leftTabs.map((tab) => (
           <Pressable key={tab.id} style={footerNavStyles.tab} onPress={() => handleTabPress(tab.id)}>
             <Text style={{ fontSize: 22, color: activeTab === tab.id ? colors.primary.default : colors.text.alternative }}>
               {tab.icon}
             </Text>
-            <Text style={activeTab === tab.id ? footerNavStyles.labelActive : footerNavStyles.label}>
-              {tab.label}
-            </Text>
-          </Pressable>
-        ))}
+          <Text style={activeTab === tab.id ? footerNavStyles.labelActive : footerNavStyles.label}>
+            {tab.label}
+          </Text>
+        </Pressable>
+      ))}
 
-        {/* Center Action Button */}
+        {/* Center Trade Action Button */}
         <Pressable style={footerNavStyles.actionButton} onPress={handleActionPress}>
           <View style={[footerNavStyles.actionButtonInner, isSheetOpen ? footerNavStyles.actionButtonActive : undefined]}>
             <Text style={{ fontSize: 28, color: "#FFFFFF", fontWeight: "300" }}>
               {isSheetOpen ? "✕" : "+"}
             </Text>
           </View>
+          <Text style={footerNavStyles.actionLabel}>Trade</Text>
         </Pressable>
 
         {/* Right tabs */}
@@ -936,6 +939,12 @@ const footerNavStyles = StyleSheet.create({
   },
   actionButtonActive: {
     backgroundColor: colors.text.muted,
+  },
+  actionLabel: {
+    fontSize: 11,
+    color: colors.text.muted,
+    fontWeight: "500",
+    marginTop: spacing[1],
   },
   actionSheet: {
     position: "absolute",
@@ -1460,7 +1469,7 @@ function ProgressBar({
   };
 
   const normalizedProgress = Math.min(100, Math.max(0, progress));
-  
+
   return (
     <View style={progressStyles.container}>
       <View style={progressStyles.track}>
@@ -1625,9 +1634,9 @@ function ButtonIcon({
       {isValidIcon ? (
         <Icon name={resolvedIcon as IconName} size={iconSize[size]} color={iconColors[variant]} />
       ) : (
-        <Text style={[buttonIconStyles.icon, { fontSize: iconSize[size], color: iconColors[variant] }]}>
-          {icon}
-        </Text>
+      <Text style={[buttonIconStyles.icon, { fontSize: iconSize[size], color: iconColors[variant] }]}>
+        {icon}
+      </Text>
       )}
     </Pressable>
   );
@@ -4242,19 +4251,19 @@ export const componentRegistry: ComponentEntry[] = [
     name: "Footer Nav",
     slug: "footer-nav",
     category: "components",
-    description: "Bottom navigation bar with 5 tabs and action sheet.",
+    description: "Bottom navigation bar with 5 tabs: Home, Explore, Trade (action), Activity, Rewards.",
     component: FooterNav,
     props: [
-      { name: "activeTab", propType: { type: "select", default: "wallet", options: ["wallet", "swap", "browser", "activity", "settings"] }, description: "Active tab" },
+      { name: "activeTab", propType: { type: "select", default: "home", options: ["home", "explore", "activity", "rewards"] }, description: "Active tab" },
       { name: "showActionSheet", propType: { type: "boolean", default: false }, description: "Show action sheet" },
     ],
-    defaultProps: { activeTab: "wallet", showActionSheet: false },
+    defaultProps: { activeTab: "home", showActionSheet: false },
     variants: [
-      { name: "Default", description: "Default state", props: { activeTab: "wallet", showActionSheet: false } },
-      { name: "With Sheet", description: "Action sheet open", props: { activeTab: "wallet", showActionSheet: true } },
-      { name: "Swap Active", description: "Swap tab selected", props: { activeTab: "swap", showActionSheet: false } },
-      { name: "Browser Active", description: "Browser selected", props: { activeTab: "browser", showActionSheet: false } },
+      { name: "Default", description: "Home selected", props: { activeTab: "home", showActionSheet: false } },
+      { name: "With Sheet", description: "Trade action sheet open", props: { activeTab: "home", showActionSheet: true } },
+      { name: "Explore Active", description: "Explore tab selected", props: { activeTab: "explore", showActionSheet: false } },
       { name: "Activity Active", description: "Activity selected", props: { activeTab: "activity", showActionSheet: false } },
+      { name: "Rewards Active", description: "Rewards selected", props: { activeTab: "rewards", showActionSheet: false } },
     ],
   },
   {

@@ -34,6 +34,8 @@ const components = [
   { name: "Search", slug: "search" },
   { name: "Announcement", slug: "announcement" },
   { name: "Token Cell", slug: "token-cell" },
+  { name: "Token List", slug: "token-list" },
+  { name: "Sorting", slug: "sorting" },
   { name: "Account Picker", slug: "account-picker" },
   { name: "Empty State", slug: "empty-state" },
   { name: "Page Header", slug: "page-header" },
@@ -149,6 +151,20 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
                   >
                     <span className="text-[var(--chrome-text-muted)]">→</span>
                     Icons
+                  </Link>
+
+                  {/* Canvas */}
+                  <Link
+                    href="/canvas"
+                    onClick={onClose}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-body-sm transition-colors ${
+                      isActive("/canvas")
+                        ? "bg-[var(--chrome-bg-subtle)] text-[var(--chrome-text)] weight-medium" 
+                        : "text-[var(--chrome-text-muted)] hover:bg-[var(--chrome-bg-subtle)] hover:text-[var(--chrome-text)]"
+                    }`}
+                  >
+                    <span className="text-[var(--chrome-text-muted)]">→</span>
+                    Canvas
                   </Link>
                 </div>
               )}
