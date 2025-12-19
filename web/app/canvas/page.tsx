@@ -230,11 +230,35 @@ export default function CanvasPage() {
 
   const selectedItem = canvasItems.find((item) => item.id === selectedItemId);
 
-  // History management
+  // History management - store as serializable data, restore component refs from registry
+  const serializeItems = (items: CanvasItem[]) => {
+    return items.map(item => ({
+      id: item.id,
+      slug: item.component.slug,
+      props: item.props,
+    }));
+  };
+
+  const deserializeItems = (serializedItems: { id: string; slug: string; props: Record<string, any> }[]): CanvasItem[] => {
+    return serializedItems.map(item => {
+      const component = componentRegistry.find(c => c.slug === item.slug);
+      if (!component) {
+        console.warn(`Component not found for slug: ${item.slug}`);
+        return null;
+      }
+      return {
+        id: item.id,
+        component,
+        props: item.props,
+      };
+    }).filter((item): item is CanvasItem => item !== null);
+  };
+
   const pushHistory = useCallback((items: CanvasItem[], selectedId: string | null) => {
     setHistory(prev => {
       const newHistory = prev.slice(0, historyIndex + 1);
-      newHistory.push({ items: JSON.parse(JSON.stringify(items)), selectedId });
+      // Store serialized items (slugs instead of component refs)
+      newHistory.push({ items: deserializeItems(serializeItems(items)), selectedId });
       return newHistory.slice(-50);
     });
     setHistoryIndex(prev => Math.min(prev + 1, 49));
@@ -245,7 +269,12 @@ export default function CanvasPage() {
       const newIndex = historyIndex - 1;
       setHistoryIndex(newIndex);
       const state = history[newIndex];
-      setCanvasItems(state.items);
+      // Re-deserialize to ensure fresh component refs
+      const restoredItems = state.items.map(item => {
+        const component = componentRegistry.find(c => c.slug === item.component.slug);
+        return component ? { ...item, component } : item;
+      });
+      setCanvasItems(restoredItems);
       setSelectedItemId(state.selectedId);
     }
   }, [historyIndex, history]);
@@ -255,7 +284,12 @@ export default function CanvasPage() {
       const newIndex = historyIndex + 1;
       setHistoryIndex(newIndex);
       const state = history[newIndex];
-      setCanvasItems(state.items);
+      // Re-deserialize to ensure fresh component refs
+      const restoredItems = state.items.map(item => {
+        const component = componentRegistry.find(c => c.slug === item.component.slug);
+        return component ? { ...item, component } : item;
+      });
+      setCanvasItems(restoredItems);
       setSelectedItemId(state.selectedId);
     }
   }, [historyIndex, history]);
