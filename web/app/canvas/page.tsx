@@ -922,7 +922,7 @@ ${components}
                                     </div>
                                   );
                                 })}
-                                {(draggedComponent || draggedItemId) && dropIndex !== undefined && dropIndex < (footerIndex >= 0 ? footerIndex : canvasItems.length) && !contentItems.some((_, i) => dropIndex === canvasItems.findIndex(ci => ci.id === contentItems[i]?.id)) && (
+                                {(draggedComponent || draggedItemId) && typeof dropIndex === "number" && dropIndex >= contentItems.length && (
                                   <div className="h-1 bg-[#8b99ff] rounded-full animate-pulse my-1" />
                                 )}
                               </div>
