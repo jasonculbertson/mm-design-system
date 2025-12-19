@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 import { componentRegistry, type ComponentEntry } from "@/lib/components";
 
 interface CanvasItem {
@@ -18,6 +20,7 @@ const deviceFrames: Record<DeviceFrame, { name: string; width: number; height: n
 };
 
 export default function CanvasPage() {
+  const router = useRouter();
   const [canvasItems, setCanvasItems] = useState<CanvasItem[]>([]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [showCode, setShowCode] = useState(false);
@@ -120,7 +123,7 @@ export default function CanvasPage() {
               ))}
             </select>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setShowCode(!showCode)}
               className={`px-3 py-1.5 rounded-lg text-body-sm transition-colors ${
@@ -130,6 +133,13 @@ export default function CanvasPage() {
               }`}
             >
               {showCode ? "Preview" : "Code"}
+            </button>
+            <button
+              onClick={() => router.back()}
+              className="w-8 h-8 flex items-center justify-center rounded-lg bg-[var(--chrome-bg-subtle)] text-[var(--chrome-text-muted)] hover:text-[var(--chrome-text)] hover:bg-[var(--color-error-muted)] transition-colors"
+              title="Close Canvas"
+            >
+              <X size={18} />
             </button>
           </div>
         </div>
