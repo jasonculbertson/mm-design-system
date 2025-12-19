@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { componentRegistry, type ComponentEntry } from "@/lib/components";
@@ -26,6 +26,8 @@ export default function CanvasPage() {
   const [showCode, setShowCode] = useState(false);
   const [search, setSearch] = useState("");
   const [deviceFrame, setDeviceFrame] = useState<DeviceFrame>("iphone-15-pro");
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const phoneFrameRef = useRef<HTMLDivElement>(null);
 
   const selectedItem = canvasItems.find((item) => item.id === selectedItemId);
 
@@ -44,6 +46,31 @@ export default function CanvasPage() {
     if (selectedItemId === id) {
       setSelectedItemId(null);
     }
+  };
+
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    setDraggingId(id);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", id);
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    if (draggingId && phoneFrameRef.current) {
+      const rect = phoneFrameRef.current.getBoundingClientRect();
+      const { clientX, clientY } = e;
+      
+      // Check if dropped outside the phone frame
+      const isOutside = 
+        clientX < rect.left || 
+        clientX > rect.right || 
+        clientY < rect.top || 
+        clientY > rect.bottom;
+      
+      if (isOutside) {
+        removeComponent(draggingId);
+      }
+    }
+    setDraggingId(null);
   };
 
   const updateProp = (id: string, key: string, value: any) => {
@@ -152,8 +179,16 @@ export default function CanvasPage() {
             </pre>
           ) : (
             <div className="relative">
+              {/* Drag-to-remove hint */}
+              {draggingId && (
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-[var(--color-error-default)] text-white text-body-sm whitespace-nowrap z-50">
+                  Drag outside to remove
+                </div>
+              )}
+              
               {/* iPhone Frame Wrapper */}
               <div
+                ref={phoneFrameRef}
                 className="relative"
                 style={{
                   background: deviceFrame !== "none" ? "linear-gradient(145deg, #1a1a1a, #2d2d2d)" : "transparent",
@@ -231,28 +266,21 @@ export default function CanvasPage() {
                       ) : (
                         canvasItems.map((item) => {
                           const Component = item.component.component;
+                          const isDragging = draggingId === item.id;
                           return (
                             <div
                               key={item.id}
+                              draggable
+                              onDragStart={(e) => handleDragStart(e, item.id)}
+                              onDragEnd={handleDragEnd}
                               onClick={() => setSelectedItemId(item.id)}
-                              className={`relative cursor-pointer transition-all ${
+                              className={`relative cursor-grab active:cursor-grabbing transition-all ${
                                 selectedItemId === item.id
                                   ? "ring-2 ring-[var(--color-primary-default)] ring-inset"
                                   : ""
-                              }`}
+                              } ${isDragging ? "opacity-50" : ""}`}
                             >
                               <Component {...item.props} />
-                              {selectedItemId === item.id && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeComponent(item.id);
-                                  }}
-                                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[var(--color-error-default)] text-white text-body-sm flex items-center justify-center z-10"
-                                >
-                                  ×
-                                </button>
-                              )}
                             </div>
                           );
                         })
