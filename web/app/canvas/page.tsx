@@ -851,76 +851,114 @@ ${components}
                       </div>
                     )}
 
-                    {/* Content */}
-                    <div ref={contentRef} className="flex-1 overflow-y-auto relative" data-theme={previewTheme}>
-                      {canvasItems.length === 0 && !isDraggingOver ? (
-                        showTemplates ? (
-                          /* Templates */
-                          <div className="p-4">
-                            <p className="text-body-sm mb-4" style={{ color: themeColors.textMuted }}>Start with a template or drag components</p>
-                            <div className="grid grid-cols-2 gap-2">
-                              {screenTemplates.map(template => (
-                                <button
-                                  key={template.id}
-                                  onClick={() => loadTemplate(template)}
-                                  className="p-3 rounded-xl text-left transition-all hover:scale-[1.02] active:scale-[0.98]"
-                                  style={{ backgroundColor: themeColors.bgSection, border: `1px solid ${themeColors.border}` }}
-                                >
-                                  <div className="flex items-center gap-2 mb-1" style={{ color: themeColors.text }}>
-                                    {template.icon}
-                                    <span className="text-body-sm weight-medium">{template.name}</span>
+                    {/* Content - split footer from scrollable content */}
+                    {(() => {
+                      // Separate footer-nav from other items
+                      const footerItem = canvasItems.find(item => item.component.slug === "footer-nav");
+                      const contentItems = canvasItems.filter(item => item.component.slug !== "footer-nav");
+                      const footerIndex = canvasItems.findIndex(item => item.component.slug === "footer-nav");
+                      
+                      // Full-width components (no side padding)
+                      const fullWidthSlugs = ["footer-nav", "tabs", "banner"];
+                      // Components that need internal padding
+                      const paddedSlugs = ["hub-header", "section-header", "token-cell", "token-list", "transaction-cell", "list-item", "empty-state", "page-header", "tab-header"];
+                      
+                      return (
+                        <>
+                          {/* Scrollable content area */}
+                          <div ref={contentRef} className="flex-1 overflow-y-auto relative" data-theme={previewTheme}>
+                            {canvasItems.length === 0 && !isDraggingOver ? (
+                              showTemplates ? (
+                                <div className="p-4">
+                                  <p className="text-body-sm mb-4" style={{ color: themeColors.textMuted }}>Start with a template or drag components</p>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    {screenTemplates.map(template => (
+                                      <button
+                                        key={template.id}
+                                        onClick={() => loadTemplate(template)}
+                                        className="p-3 rounded-xl text-left transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                        style={{ backgroundColor: themeColors.bgSection, border: `1px solid ${themeColors.border}` }}
+                                      >
+                                        <div className="flex items-center gap-2 mb-1" style={{ color: themeColors.text }}>
+                                          {template.icon}
+                                          <span className="text-body-sm weight-medium">{template.name}</span>
+                                        </div>
+                                        <p className="text-body-xs" style={{ color: themeColors.textMuted }}>{template.description}</p>
+                                      </button>
+                                    ))}
                                   </div>
-                                  <p className="text-body-xs" style={{ color: themeColors.textMuted }}>{template.description}</p>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center h-full p-6" style={{ color: themeColors.textMuted }}>
-                            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: themeColors.bgSection }}>
-                              <Layers size={28} className="opacity-40" />
-                            </div>
-                            <p className="text-body-md mb-1">Canvas is empty</p>
-                            <p className="text-body-sm text-center opacity-60">Drag components or <button onClick={() => setShowTemplates(true)} className="underline">use a template</button></p>
-                          </div>
-                        )
-                      ) : (
-                        <div className="space-y-0" data-theme={previewTheme}>
-                          {canvasItems.map((item, index) => {
-                            const Component = item.component.component;
-                            const isDragging = draggedItemId === item.id;
-                            const isSelected = selectedItemId === item.id;
-                            const showDropBefore = dropIndex === index && (draggedComponent || draggedItemId);
-                            const showDropAfter = dropIndex === index + 1 && index === canvasItems.length - 1 && (draggedComponent || draggedItemId);
-
-                            return (
-                              <div key={item.id}>
-                                {showDropBefore && <div className="h-1 bg-[#8b99ff] mx-2 rounded-full animate-pulse" />}
-                                <div
-                                  draggable
-                                  onDragStart={(e) => handleItemDragStart(e, item.id, index)}
-                                  onDragEnd={handleItemDragEnd}
-                                  onClick={() => setSelectedItemId(item.id)}
-                                  className={`relative transition-all cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#8b99ff] ring-inset z-10" : ""} ${isDragging ? "opacity-30 scale-95" : ""}`}
-                                >
-                                  <Component {...item.props} />
                                 </div>
-                                {showDropAfter && <div className="h-1 bg-[#8b99ff] mx-2 rounded-full animate-pulse" />}
-                              </div>
-                            );
-                          })}
-                          {(draggedComponent || draggedItemId) && dropIndex === canvasItems.length && (
-                            <div className="h-1 bg-[#8b99ff] mx-2 rounded-full animate-pulse" />
-                          )}
-                        </div>
-                      )}
-                    </div>
+                              ) : (
+                                <div className="flex flex-col items-center justify-center h-full p-6" style={{ color: themeColors.textMuted }}>
+                                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: themeColors.bgSection }}>
+                                    <Layers size={28} className="opacity-40" />
+                                  </div>
+                                  <p className="text-body-md mb-1">Canvas is empty</p>
+                                  <p className="text-body-sm text-center opacity-60">Drag components or <button onClick={() => setShowTemplates(true)} className="underline">use a template</button></p>
+                                </div>
+                              )
+                            ) : (
+                              <div className="px-4 py-2" data-theme={previewTheme}>
+                                {contentItems.map((item, index) => {
+                                  const Component = item.component.component;
+                                  const isDragging = draggedItemId === item.id;
+                                  const isSelected = selectedItemId === item.id;
+                                  const actualIndex = canvasItems.findIndex(i => i.id === item.id);
+                                  const showDropBefore = dropIndex === actualIndex && (draggedComponent || draggedItemId);
+                                  const isFullWidth = fullWidthSlugs.includes(item.component.slug);
 
-                    {device.hasIsland && (
-                      <div className="flex-shrink-0 flex justify-center pb-2 pt-1" style={{ backgroundColor: themeColors.bg }}>
-                        <div className="w-[134px] h-[5px] rounded-full opacity-30" style={{ backgroundColor: themeColors.text }} />
-                      </div>
-                    )}
+                                  return (
+                                    <div key={item.id} style={{ margin: isFullWidth ? "0 -16px" : undefined }}>
+                                      {showDropBefore && <div className="h-1 bg-[#8b99ff] rounded-full animate-pulse my-1" />}
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => handleItemDragStart(e, item.id, actualIndex)}
+                                        onDragEnd={handleItemDragEnd}
+                                        onClick={() => setSelectedItemId(item.id)}
+                                        className={`relative transition-all cursor-grab active:cursor-grabbing ${isSelected ? "ring-2 ring-[#8b99ff] ring-inset z-10 rounded-lg" : ""} ${isDragging ? "opacity-30 scale-95" : ""}`}
+                                      >
+                                        <Component {...item.props} />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                                {(draggedComponent || draggedItemId) && dropIndex !== undefined && dropIndex < (footerIndex >= 0 ? footerIndex : canvasItems.length) && !contentItems.some((_, i) => dropIndex === canvasItems.findIndex(ci => ci.id === contentItems[i]?.id)) && (
+                                  <div className="h-1 bg-[#8b99ff] rounded-full animate-pulse my-1" />
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Fixed Footer Nav */}
+                          {footerItem && (
+                            <div 
+                              className="flex-shrink-0"
+                              style={{ backgroundColor: themeColors.bgSection }}
+                              onClick={() => setSelectedItemId(footerItem.id)}
+                            >
+                              <div
+                                draggable
+                                onDragStart={(e) => handleItemDragStart(e, footerItem.id, footerIndex)}
+                                onDragEnd={handleItemDragEnd}
+                                className={`relative cursor-grab active:cursor-grabbing ${selectedItemId === footerItem.id ? "ring-2 ring-[#8b99ff] ring-inset" : ""} ${draggedItemId === footerItem.id ? "opacity-30" : ""}`}
+                              >
+                                {(() => {
+                                  const FooterComponent = footerItem.component.component;
+                                  return <FooterComponent {...footerItem.props} />;
+                                })()}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Home Indicator */}
+                          {device.hasIsland && (
+                            <div className="flex-shrink-0 flex justify-center pb-2 pt-1" style={{ backgroundColor: footerItem ? themeColors.bgSection : themeColors.bg }}>
+                              <div className="w-[134px] h-[5px] rounded-full opacity-30" style={{ backgroundColor: themeColors.text }} />
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
