@@ -174,92 +174,98 @@ export default function CanvasPage() {
               
                 {/* Screen Container */}
                 <div
-                  className="relative bg-[var(--color-background-default)] overflow-hidden"
+                  className="relative bg-[var(--color-background-default)] overflow-hidden flex flex-col"
                   style={{
                     width: deviceFrames[deviceFrame].width,
                     height: deviceFrames[deviceFrame].height,
                     borderRadius: deviceFrame === "iphone-15-pro" ? 47 : deviceFrame === "iphone-se" ? 36 : 0,
                   }}
                 >
-                {/* Dynamic Island */}
-                {deviceFrame === "iphone-15-pro" && (
-                  <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50">
-                    <div className="w-[126px] h-[37px] bg-black rounded-[20px]" />
-                  </div>
-                )}
-
-                {/* Status Bar */}
-                <div className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between px-8 h-[54px]">
-                  <span className="text-[14px] weight-semibold text-[var(--color-text-default)]">9:41</span>
-                  <div className="flex items-center gap-1">
-                    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" className="text-[var(--color-text-default)]">
-                      <path d="M1 4.5C1 3.67 1.67 3 2.5 3H3.5C4.33 3 5 3.67 5 4.5V10.5C5 11.33 4.33 12 3.5 12H2.5C1.67 12 1 11.33 1 10.5V4.5Z" opacity="0.3"/>
-                      <path d="M6 3C6 2.17 6.67 1.5 7.5 1.5H8.5C9.33 1.5 10 2.17 10 3V10.5C10 11.33 9.33 12 8.5 12H7.5C6.67 12 6 11.33 6 10.5V3Z" opacity="0.6"/>
-                      <path d="M11 1.5C11 0.67 11.67 0 12.5 0H13.5C14.33 0 15 0.67 15 1.5V10.5C15 11.33 14.33 12 13.5 12H12.5C11.67 12 11 11.33 11 10.5V1.5Z"/>
-                    </svg>
-                    <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor" className="text-[var(--color-text-default)]">
-                      <path d="M8.5 2.5C10.5 2.5 12.3 3.3 13.6 4.6L15 3.2C13.3 1.5 11 0.5 8.5 0.5C6 0.5 3.7 1.5 2 3.2L3.4 4.6C4.7 3.3 6.5 2.5 8.5 2.5Z"/>
-                      <path d="M5.1 6.4L6.5 7.8C7.1 7.2 7.8 6.9 8.5 6.9C9.2 6.9 9.9 7.2 10.5 7.8L11.9 6.4C10.9 5.4 9.8 4.9 8.5 4.9C7.2 4.9 6.1 5.4 5.1 6.4Z"/>
-                      <circle cx="8.5" cy="10.5" r="1.5"/>
-                    </svg>
-                    <div className="flex items-center">
-                      <div className="w-[25px] h-[12px] border-2 border-current rounded-[4px] relative">
-                        <div className="absolute inset-[2px] right-[4px] bg-current rounded-[2px]" />
+                  {/* Fixed Status Bar - Always visible */}
+                  <div 
+                    className="flex-shrink-0 flex items-center justify-between px-6 bg-[var(--color-background-default)]"
+                    style={{ 
+                      height: deviceFrame === "iphone-15-pro" ? 54 : 24,
+                      paddingTop: deviceFrame === "iphone-15-pro" ? 14 : 4,
+                    }}
+                  >
+                    <span className="text-[14px] weight-semibold text-[var(--color-text-default)]">9:41</span>
+                    <div className="flex items-center gap-1.5">
+                      {/* Signal */}
+                      <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" className="text-[var(--color-text-default)]">
+                        <path d="M1 4.5C1 3.67 1.67 3 2.5 3H3.5C4.33 3 5 3.67 5 4.5V10.5C5 11.33 4.33 12 3.5 12H2.5C1.67 12 1 11.33 1 10.5V4.5Z" opacity="0.3"/>
+                        <path d="M6 3C6 2.17 6.67 1.5 7.5 1.5H8.5C9.33 1.5 10 2.17 10 3V10.5C10 11.33 9.33 12 8.5 12H7.5C6.67 12 6 11.33 6 10.5V3Z" opacity="0.6"/>
+                        <path d="M11 1.5C11 0.67 11.67 0 12.5 0H13.5C14.33 0 15 0.67 15 1.5V10.5C15 11.33 14.33 12 13.5 12H12.5C11.67 12 11 11.33 11 10.5V1.5Z"/>
+                      </svg>
+                      {/* WiFi */}
+                      <svg width="16" height="12" viewBox="0 0 17 12" fill="currentColor" className="text-[var(--color-text-default)]">
+                        <path d="M8.5 2.5C10.5 2.5 12.3 3.3 13.6 4.6L15 3.2C13.3 1.5 11 0.5 8.5 0.5C6 0.5 3.7 1.5 2 3.2L3.4 4.6C4.7 3.3 6.5 2.5 8.5 2.5Z"/>
+                        <path d="M5.1 6.4L6.5 7.8C7.1 7.2 7.8 6.9 8.5 6.9C9.2 6.9 9.9 7.2 10.5 7.8L11.9 6.4C10.9 5.4 9.8 4.9 8.5 4.9C7.2 4.9 6.1 5.4 5.1 6.4Z"/>
+                        <circle cx="8.5" cy="10.5" r="1.5"/>
+                      </svg>
+                      {/* Battery */}
+                      <div className="flex items-center">
+                        <div className="w-[25px] h-[12px] border-2 border-current rounded-[4px] relative text-[var(--color-text-default)]">
+                          <div className="absolute inset-[2px] right-[4px] bg-current rounded-[1px]" />
+                        </div>
+                        <div className="w-[2px] h-[5px] bg-[var(--color-text-default)] rounded-r-sm ml-px" />
                       </div>
-                      <div className="w-[2px] h-[5px] bg-current rounded-r-sm ml-[1px]" />
                     </div>
                   </div>
-                </div>
 
-                {/* Screen Content */}
-                <div 
-                  className="absolute inset-0 overflow-y-auto"
-                  style={{ 
-                    paddingTop: deviceFrame === "iphone-15-pro" ? 54 : 20,
-                    paddingBottom: deviceFrame === "iphone-15-pro" ? 34 : 0,
-                  }}
-                >
-                  <div className="p-4 space-y-4">
-                    {canvasItems.length === 0 ? (
-                      <div className="text-center py-20 text-[var(--color-text-muted)]">
-                        <p className="text-body-md mb-2">No components yet</p>
-                        <p className="text-body-sm">Click a component from the left to add it</p>
-                      </div>
-                    ) : (
-                      canvasItems.map((item) => {
-                        const Component = item.component.component;
-                        return (
-                          <div
-                            key={item.id}
-                            onClick={() => setSelectedItemId(item.id)}
-                            className={`relative cursor-pointer rounded-lg transition-all ${
-                              selectedItemId === item.id
-                                ? "ring-2 ring-[var(--color-primary-default)]"
-                                : "hover:ring-1 hover:ring-[var(--color-border-muted)]"
-                            }`}
-                          >
-                            <Component {...item.props} />
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeComponent(item.id);
-                              }}
-                              className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[var(--color-error-default)] text-white text-body-sm flex items-center justify-center opacity-0 group-hover:opacity-100 hover:!opacity-100 transition-opacity"
-                              style={{ opacity: selectedItemId === item.id ? 1 : undefined }}
+                  {/* Dynamic Island - overlays status bar */}
+                  {deviceFrame === "iphone-15-pro" && (
+                    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50">
+                      <div className="w-[126px] h-[37px] bg-black rounded-[20px]" />
+                    </div>
+                  )}
+
+                  {/* Scrollable Content Area */}
+                  <div className="flex-1 overflow-y-auto">
+                    <div className="space-y-2">
+                      {canvasItems.length === 0 ? (
+                        <div className="text-center py-20 text-[var(--color-text-muted)]">
+                          <p className="text-body-md mb-2">No components yet</p>
+                          <p className="text-body-sm">Click a component from the left to add it</p>
+                        </div>
+                      ) : (
+                        canvasItems.map((item) => {
+                          const Component = item.component.component;
+                          return (
+                            <div
+                              key={item.id}
+                              onClick={() => setSelectedItemId(item.id)}
+                              className={`relative cursor-pointer transition-all ${
+                                selectedItemId === item.id
+                                  ? "ring-2 ring-[var(--color-primary-default)] ring-inset"
+                                  : ""
+                              }`}
                             >
-                              ×
-                            </button>
-                          </div>
-                        );
-                      })
-                    )}
+                              <Component {...item.props} />
+                              {selectedItemId === item.id && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeComponent(item.id);
+                                  }}
+                                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[var(--color-error-default)] text-white text-body-sm flex items-center justify-center z-10"
+                                >
+                                  ×
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Home Indicator */}
-                {deviceFrame === "iphone-15-pro" && (
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[134px] h-[5px] bg-[var(--color-text-default)] rounded-full opacity-30" />
-                )}
+                  {/* Home Indicator */}
+                  {deviceFrame === "iphone-15-pro" && (
+                    <div className="flex-shrink-0 flex justify-center pb-2 pt-1">
+                      <div className="w-[134px] h-[5px] bg-[var(--color-text-default)] rounded-full opacity-30" />
+                    </div>
+                  )}
               </div>
               {/* End Screen Container */}
             </div>
