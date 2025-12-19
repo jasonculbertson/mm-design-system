@@ -152,36 +152,35 @@ export default function CanvasPage() {
             </pre>
           ) : (
             <div className="relative">
-              {/* iPhone Frame */}
-              {deviceFrame !== "none" && (
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: "linear-gradient(145deg, #1a1a1a, #2d2d2d)",
-                    borderRadius: deviceFrame === "iphone-15-pro" ? 55 : 40,
-                    padding: 12,
-                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1) inset",
-                  }}
-                >
-                  {/* Side buttons */}
-                  <div className="absolute -left-[3px] top-[120px] w-[3px] h-[30px] bg-[#2d2d2d] rounded-l-sm" />
-                  <div className="absolute -left-[3px] top-[170px] w-[3px] h-[60px] bg-[#2d2d2d] rounded-l-sm" />
-                  <div className="absolute -left-[3px] top-[240px] w-[3px] h-[60px] bg-[#2d2d2d] rounded-l-sm" />
-                  <div className="absolute -right-[3px] top-[180px] w-[3px] h-[80px] bg-[#2d2d2d] rounded-r-sm" />
-                </div>
-              )}
-              
-              {/* Screen Container */}
+              {/* iPhone Frame Wrapper */}
               <div
-                className="relative bg-[var(--color-background-default)] overflow-hidden"
+                className="relative"
                 style={{
-                  width: deviceFrames[deviceFrame].width,
-                  height: deviceFrames[deviceFrame].height,
-                  borderRadius: deviceFrame === "iphone-15-pro" ? 47 : deviceFrame === "iphone-se" ? 0 : 0,
-                  margin: deviceFrame !== "none" ? 12 : 0,
-                  boxShadow: deviceFrame !== "none" ? "0 0 0 1px rgba(0,0,0,0.3)" : "none",
+                  background: deviceFrame !== "none" ? "linear-gradient(145deg, #1a1a1a, #2d2d2d)" : "transparent",
+                  borderRadius: deviceFrame === "iphone-15-pro" ? 55 : deviceFrame === "iphone-se" ? 44 : 0,
+                  padding: deviceFrame !== "none" ? 12 : 0,
+                  boxShadow: deviceFrame !== "none" ? "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1) inset" : "none",
                 }}
               >
+                {/* Side buttons */}
+                {deviceFrame !== "none" && (
+                  <>
+                    <div className="absolute -left-[3px] top-[120px] w-[3px] h-[30px] bg-[#2d2d2d] rounded-l-sm" />
+                    <div className="absolute -left-[3px] top-[170px] w-[3px] h-[60px] bg-[#2d2d2d] rounded-l-sm" />
+                    <div className="absolute -left-[3px] top-[240px] w-[3px] h-[60px] bg-[#2d2d2d] rounded-l-sm" />
+                    <div className="absolute -right-[3px] top-[180px] w-[3px] h-[80px] bg-[#2d2d2d] rounded-r-sm" />
+                  </>
+                )}
+              
+                {/* Screen Container */}
+                <div
+                  className="relative bg-[var(--color-background-default)] overflow-hidden"
+                  style={{
+                    width: deviceFrames[deviceFrame].width,
+                    height: deviceFrames[deviceFrame].height,
+                    borderRadius: deviceFrame === "iphone-15-pro" ? 47 : deviceFrame === "iphone-se" ? 36 : 0,
+                  }}
+                >
                 {/* Dynamic Island */}
                 {deviceFrame === "iphone-15-pro" && (
                   <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50">
@@ -262,6 +261,9 @@ export default function CanvasPage() {
                   <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[134px] h-[5px] bg-[var(--color-text-default)] rounded-full opacity-30" />
                 )}
               </div>
+              {/* End Screen Container */}
+            </div>
+            {/* End Frame Wrapper */}
             </div>
           )}
         </div>
