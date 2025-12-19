@@ -1,0 +1,738 @@
+# MetaMask Design System
+
+This is the MetaMask Design System - an interactive component library built with Expo and React Native. Use these components and tokens when building MetaMask mobile UI.
+
+## Design Tokens
+
+Import tokens from `@/lib/tokens`:
+
+```typescript
+import { colors, spacing, borderRadius, typography } from "@/lib/tokens";
+```
+
+### Colors (Dark Theme)
+- `colors.background.default` - #222325 (main background)
+- `colors.background.alternative` - #121314 (sunken surfaces)
+- `colors.background.section` - #31333A (cards, sections)
+- `colors.text.default` - #FFFFFF (primary text)
+- `colors.text.alternative` - #858B9A (secondary text)
+- `colors.text.muted` - #686E7D (disabled text)
+- `colors.primary.default` - #8b99ff (interactive elements)
+- `colors.primary.muted` - #8b99ff26 (primary backgrounds)
+- `colors.error.default` - #FF7584 (errors, destructive)
+- `colors.success.default` - #4AE39E (success states)
+- `colors.warning.default` - #FFD33D (warnings)
+- `colors.border.default` - #9CA1AF (borders)
+- `colors.border.muted` - #858b9a33 (subtle borders)
+
+### Spacing (4px base)
+- `spacing[1]` = 4px
+- `spacing[2]` = 8px
+- `spacing[3]` = 12px
+- `spacing[4]` = 16px
+- `spacing[6]` = 24px
+- `spacing[8]` = 32px
+
+### Border Radius
+- `borderRadius.xs` = 4px
+- `borderRadius.sm` = 8px
+- `borderRadius.md` = 12px
+- `borderRadius.lg` = 16px
+- `borderRadius.pill` = 9999px
+
+## Available Components
+
+Import from `@/registry/components`:
+
+### Primitives
+
+#### Button
+```tsx
+<Button 
+  label="Click me"
+  variant="primary" // "primary" | "secondary" | "tertiary" | "danger"
+  size="md" // "sm" | "md" | "lg"
+  disabled={false}
+  loading={false}
+/>
+```
+
+#### Input
+```tsx
+<Input
+  placeholder="Enter text..."
+  value=""
+  label="Field Label"
+  error="Error message"
+  disabled={false}
+/>
+```
+
+#### Card
+```tsx
+<Card
+  title="Card Title"
+  description="Card description"
+  variant="default" // "default" | "elevated" | "outlined"
+  hasAction={false}
+/>
+```
+
+#### Badge
+```tsx
+<Badge
+  label="Status"
+  variant="primary" // "default" | "primary" | "success" | "warning" | "error"
+  size="md" // "sm" | "md"
+/>
+```
+
+#### Avatar
+```tsx
+<Avatar
+  name="John Doe"
+  size="md" // "sm" | "md" | "lg" | "xl"
+  showBadge={false}
+/>
+```
+
+#### Switch
+```tsx
+<CustomSwitch
+  value={false}
+  label="Enable feature"
+  disabled={false}
+/>
+```
+
+#### Banner
+```tsx
+<Banner
+  title="Notice"
+  description="Important information"
+  variant="info" // "info" | "success" | "warning" | "error"
+  dismissible={false}
+/>
+```
+
+#### Skeleton
+```tsx
+<Skeleton
+  variant="text" // "text" | "circular" | "rectangular"
+  width={100}
+  height={20}
+/>
+```
+
+#### Dialog
+```tsx
+<Dialog
+  open={true}
+  title="Confirm Action"
+  description="Are you sure you want to proceed?"
+  primaryAction="Confirm"
+  secondaryAction="Cancel"
+  variant="default" // "default" | "danger"
+/>
+```
+
+#### Select
+```tsx
+<Select
+  label="Network"
+  value="Ethereum Mainnet"
+  placeholder="Select a network"
+  disabled={false}
+/>
+```
+
+#### Chip
+```tsx
+<Chip
+  label="NFTs"
+  selected={true}
+  disabled={false}
+/>
+```
+
+#### Toast
+```tsx
+<Toast
+  message="Transaction complete"
+  variant="success" // "default" | "success" | "error"
+  action="View"
+/>
+```
+
+#### ProgressBar
+```tsx
+<ProgressBar
+  progress={75}
+  variant="primary" // "primary" | "success" | "warning" | "error"
+  showLabel={true}
+/>
+```
+
+#### Divider
+```tsx
+<Divider variant="full" /> // "full" | "inset" | "middle"
+```
+
+#### AvatarNetwork
+```tsx
+<AvatarNetwork
+  name="Ethereum" // "Ethereum" | "Polygon" | "Arbitrum" | "Optimism" | "Avalanche" | "BNB"
+  size="md" // "xs" | "sm" | "md" | "lg"
+/>
+```
+
+#### AvatarToken
+```tsx
+<AvatarToken
+  symbol="ETH"
+  name="Ethereum"
+  size="md" // "sm" | "md" | "lg"
+/>
+```
+
+#### ButtonIcon
+```tsx
+<ButtonIcon
+  icon="✕"
+  size="md" // "sm" | "md" | "lg"
+  variant="default" // "default" | "primary" | "danger"
+  disabled={false}
+/>
+```
+
+#### Checkbox
+```tsx
+<Checkbox
+  checked={false}
+  label="Accept terms and conditions"
+  disabled={false}
+/>
+```
+
+#### Tabs
+```tsx
+<Tabs
+  tabs={["Tokens", "NFTs", "Activity"]}
+  activeIndex={0}
+  variant="default" // "default" | "pills"
+/>
+```
+
+#### TextArea
+```tsx
+<TextArea
+  placeholder="Enter message..."
+  label="Description"
+  rows={4}
+  disabled={false}
+/>
+```
+
+#### BadgeCount
+```tsx
+<BadgeCount
+  count={5}
+  max={99}
+  variant="error" // "default" | "primary" | "error"
+/>
+```
+
+#### NetworkBadge
+```tsx
+<NetworkBadge
+  network="Ethereum" // "Ethereum" | "Polygon" | "Arbitrum" | "Optimism"
+  size="sm" // "xs" | "sm"
+/>
+```
+
+#### Radio
+```tsx
+<Radio
+  selected={false}
+  label="Option A"
+  disabled={false}
+/>
+```
+
+#### RadioGroup
+```tsx
+<RadioGroup
+  options="Low,Medium,High"
+  selected={0}
+  disabled={false}
+/>
+```
+
+#### Spinner
+```tsx
+<Spinner
+  size="md" // "sm" | "md" | "lg"
+  variant="primary" // "primary" | "default" | "inverse"
+/>
+```
+
+#### Tooltip
+```tsx
+<Tooltip
+  text="Helpful information"
+  position="top" // "top" | "bottom" | "left" | "right"
+/>
+```
+
+#### Link
+```tsx
+<Link
+  text="Learn more"
+  variant="default" // "default" | "primary" | "subtle"
+  disabled={false}
+/>
+```
+
+#### Slider
+```tsx
+<Slider
+  value={50}
+  min={0}
+  max={100}
+  showValue={true}
+  disabled={false}
+/>
+```
+
+#### Accordion
+```tsx
+<Accordion
+  title="Click to expand"
+  content="Hidden content here"
+  expanded={false}
+/>
+```
+
+#### BottomSheet
+```tsx
+<BottomSheet
+  title="Select Option"
+  visible={true}
+  hasHandle={true}
+/>
+```
+
+#### Popover
+```tsx
+<Popover
+  trigger="Click me"
+  content="Additional info"
+  visible={true}
+/>
+```
+
+#### SegmentedControl
+```tsx
+<SegmentedControl
+  segments="Buy,Sell"
+  selected={0}
+  disabled={false}
+/>
+```
+
+#### PasswordInput
+```tsx
+<PasswordInput
+  placeholder="Enter password"
+  value=""
+  label="Password"
+  showPassword={false}
+  error=""
+/>
+```
+
+#### SearchBar
+```tsx
+<SearchBar
+  placeholder="Search tokens..."
+  value=""
+  showClear={true}
+/>
+```
+
+### Icons (Official MetaMask Icons)
+
+The design system includes **200+ official MetaMask icons** from `@metamask/design-system-react-native`.
+
+```tsx
+import { MetaMaskIcon } from "@/registry/components";
+
+<MetaMaskIcon
+  name="Wallet" // See icon categories below
+  size="md" // "xs" | "sm" | "md" | "lg" | "xl"
+  color="default" // "default" | "primary" | "error" | "success" | "warning"
+/>
+```
+
+#### Icon Categories
+
+| Category | Example Icons |
+|----------|--------------|
+| **Wallet** | Wallet, Send, Receive, SwapHorizontal, Gas, Bridge, Stake, Bank, Card, Money, Coin |
+| **Navigation** | Home, Menu, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Expand, Collapse |
+| **Actions** | Add, Close, Check, Copy, Edit, Trash, Refresh, Search, Filter, Download, Upload |
+| **Security** | Lock, Key, Security, Eye, EyeSlash, Fingerprint, ShieldLock |
+| **Status** | Info, Question, Warning, Danger, Error, Check, Clock, Loading |
+| **Social** | Heart, Star, ThumbUp, ThumbDown, User, People |
+| **Crypto** | Ethereum, QrCode, Bridge, Stake, Gas, Snaps, Flask |
+
+#### All Available Icons (200+)
+
+Navigation: Home, HomeFilled, Menu, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Arrow2Left, Arrow2Right, Expand, Collapse, FirstPage, LastPage
+
+Actions: Add, AddCircle, Close, Check, CheckBold, Copy, CopySuccess, Edit, Trash, Refresh, Search, Filter, Sort, Download, Upload, Export, Share, Link, Scan
+
+Wallet: Wallet, WalletFilled, Send, Receive, SwapHorizontal, SwapVertical, Gas, Bridge, Stake, Bank, Card, Money, Coin, BuySell
+
+Security: Lock, LockSlash, Key, SecurityKey, Security, Eye, EyeSlash, Fingerprint, FaceId, ShieldLock
+
+Status: Info, Question, Warning, Danger, Error, Confirmation, Pending, Clock, Loading
+
+Crypto: Ethereum, QrCode, Snaps, SnapsMobile, Flask, Connect, Code
+
+### Components
+
+#### HubHeader
+Balance display with actions - use for wallet home screens.
+```tsx
+<HubHeader
+  balance="$1,234.56"
+  label="Available balance"
+  primaryAction="Add funds"
+  secondaryAction="Withdraw"
+  showAvatar={true}
+/>
+```
+
+#### AccountPicker
+Account selector dropdown - use in headers.
+```tsx
+<AccountPicker
+  name="Account 1"
+  connected={true}
+  loading={false}
+/>
+```
+
+#### TokenCell
+Token/asset row - use in token lists.
+```tsx
+<TokenCell
+  symbol="ETH"
+  name="Ethereum"
+  balance="1.5"
+  value="$3,000.00"
+  change="+2.5%"
+  changePositive={true}
+/>
+```
+
+#### FooterNav
+Bottom navigation bar.
+```tsx
+<FooterNav
+  activeTab="wallet" // "wallet" | "browser" | "settings"
+/>
+```
+
+#### EmptyState
+Placeholder for empty content.
+```tsx
+<EmptyState
+  title="No tokens yet"
+  description="Add your first token to get started"
+  actionLabel="Add Token"
+/>
+```
+
+#### PageHeader
+Navigation header with back button and actions.
+```tsx
+<PageHeader
+  title="Settings"
+  showBack={true}
+  action="Save"
+/>
+```
+
+#### SectionHeader
+Section title with optional action link.
+```tsx
+<SectionHeader
+  title="Recent Activity"
+  action="See all"
+/>
+```
+
+#### ListItem
+Row item for settings and menus.
+```tsx
+<ListItem
+  title="Security"
+  subtitle="Manage your security settings"
+  leftIcon="🔒"
+  showChevron={true}
+  variant="default" // "default" | "destructive"
+/>
+```
+
+#### TransactionCell
+Transaction history row.
+```tsx
+<TransactionCell
+  type="send" // "send" | "receive" | "swap" | "approve"
+  status="confirmed" // "pending" | "confirmed" | "failed"
+  amount="-0.5 ETH"
+  value="$1,000.00"
+  address="0x1234...5678"
+  timestamp="2 hours ago"
+/>
+```
+
+#### AddressDisplay
+Crypto address with copy button.
+```tsx
+<AddressDisplay
+  address="0x1234567890abcdef..."
+  truncate={true}
+  showCopy={true}
+  variant="default" // "default" | "compact" | "full"
+/>
+```
+
+#### GasFeeSelector
+Gas fee estimation and selection.
+```tsx
+<GasFeeSelector
+  selected="medium" // "low" | "medium" | "high" | "custom"
+  lowFee="$0.50"
+  mediumFee="$1.00"
+  highFee="$2.50"
+  showCustom={false}
+/>
+```
+
+#### NFTCard
+NFT display card.
+```tsx
+<NFTCard
+  name="Cool NFT #1234"
+  collection="Cool Collection"
+  price="0.5 ETH"
+  showPrice={true}
+/>
+```
+
+#### NetworkSelector
+Network selection list.
+```tsx
+<NetworkSelector
+  selected="Ethereum"
+  networks="Ethereum,Polygon,Arbitrum,Optimism"
+/>
+```
+
+#### QRCode
+QR code for addresses.
+```tsx
+<QRCode
+  value="0x1234567890abcdef..."
+  size="md" // "sm" | "md" | "lg"
+  showValue={true}
+/>
+```
+
+#### StatusIndicator
+Transaction/connection status.
+```tsx
+<StatusIndicator
+  status="confirmed" // "pending" | "confirmed" | "failed" | "processing"
+  label="Confirmed"
+  showPulse={false}
+/>
+```
+
+#### WalletConnectSession
+Connected dApp display.
+```tsx
+<WalletConnectSession
+  dappName="Uniswap"
+  dappUrl="app.uniswap.org"
+  connected={true}
+  network="Ethereum"
+/>
+```
+
+#### AmountInput
+Crypto amount input with token selector.
+```tsx
+<AmountInput
+  value="0.0"
+  token="ETH"
+  fiatValue="$0.00"
+  balance="1.5"
+  showMax={true}
+/>
+```
+
+#### SwapPreview
+Token swap preview with rates.
+```tsx
+<SwapPreview
+  fromToken="ETH"
+  fromAmount="1.0"
+  toToken="USDC"
+  toAmount="2,000.00"
+  rate="1 ETH = 2,000 USDC"
+  fee="$2.50"
+/>
+```
+
+#### ConfirmationSheet
+Transaction confirmation bottom sheet.
+```tsx
+<ConfirmationSheet
+  title="Confirm Transaction"
+  amount="1.0 ETH"
+  recipient="0x1234...5678"
+  fee="$2.50"
+  total="$2,002.50"
+/>
+```
+
+#### Identicon
+Address-based avatar/identicon.
+```tsx
+<Identicon
+  address="0x1234567890abcdef"
+  size="md" // "sm" | "md" | "lg"
+/>
+```
+
+#### ChainBadge
+Current chain indicator.
+```tsx
+<ChainBadge
+  chain="Ethereum" // "Ethereum" | "Polygon" | "Arbitrum" | "Optimism" | "Avalanche" | "BNB" | "Base"
+  showName={true}
+/>
+```
+
+#### Stepper
+Multi-step progress indicator.
+```tsx
+<Stepper
+  steps="Connect,Approve,Confirm"
+  current={0}
+  variant="default" // "default" | "compact"
+/>
+```
+
+#### NotificationCell
+In-app notification row.
+```tsx
+<NotificationCell
+  title="Transaction Complete"
+  message="Your transaction has been confirmed"
+  timestamp="2 min ago"
+  type="success" // "info" | "success" | "warning" | "error"
+  unread={true}
+/>
+```
+
+#### CollectibleGrid
+NFT grid layout.
+```tsx
+<CollectibleGrid
+  count={4}
+  columns={2}
+/>
+```
+
+## Screen Building Guidelines
+
+1. **Always use dark theme colors** - MetaMask mobile uses dark mode
+2. **Use StyleSheet.create()** - Not inline styles or className
+3. **Follow spacing scale** - Use `spacing[n]` not arbitrary values
+4. **Use semantic colors** - `colors.error.default` not hardcoded reds
+
+### Example Screen Structure
+
+```tsx
+import { View, ScrollView, StyleSheet } from "react-native";
+import { colors, spacing, borderRadius } from "@/lib/tokens";
+import { HubHeader, TokenCell, FooterNav } from "@/registry/components";
+
+export function WalletScreen() {
+  return (
+    <View style={styles.container}>
+      <ScrollView style={styles.content}>
+        <HubHeader
+          balance="$5,000.00"
+          label="Total balance"
+          primaryAction="Buy"
+          secondaryAction="Send"
+        />
+        
+        <View style={styles.tokenList}>
+          <TokenCell symbol="ETH" name="Ethereum" balance="2.0" value="$4,000" change="+3.2%" changePositive />
+          <TokenCell symbol="USDC" name="USD Coin" balance="1000" value="$1,000" change="0%" changePositive />
+        </View>
+      </ScrollView>
+      
+      <FooterNav activeTab="wallet" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background.default,
+  },
+  content: {
+    flex: 1,
+    padding: spacing[4],
+  },
+  tokenList: {
+    marginTop: spacing[4],
+    gap: spacing[2],
+  },
+});
+```
+
+## File Structure
+
+```
+mm-ds/
+├── app/                    # Expo Router pages
+│   ├── index.tsx          # Home page
+│   ├── tokens.tsx         # Token documentation
+│   ├── canvas.tsx         # Screen builder
+│   └── components/        # Component detail pages
+├── components/ui/         # App UI components (Sidebar, etc.)
+├── lib/
+│   └── tokens.ts          # Design tokens
+└── registry/
+    └── components.tsx     # All design system components
+```
+
+## When Building New Screens
+
+1. Start with the container using `colors.background.default`
+2. Add appropriate components from the registry
+3. Use `spacing` for all padding, margins, gaps
+4. Use `borderRadius` for rounded corners
+5. Keep text colors semantic: default, alternative, or muted
+6. Test on the Canvas page to preview your composition
+

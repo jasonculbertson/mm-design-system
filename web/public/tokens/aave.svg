@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="aave" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#B6509E"/>
+      <stop offset="100%" style="stop-color:#2EBAC6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="20" cy="20" r="20" fill="url(#aave)"/>
+  <path d="M14 28l6-16 6 16h-3l-1-3h-4l-1 3h-3zm6-11l-1.5 5h3L20 17z" fill="white"/>
+</svg>
