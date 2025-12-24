@@ -46,7 +46,7 @@ import {
 } from "./tokens";
 
 // Hook to get theme colors based on document class
-function useColors() {
+export function useColors() {
   const [isDark, setIsDark] = useState(true);
   
   React.useEffect(() => {
