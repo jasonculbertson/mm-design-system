@@ -478,7 +478,7 @@ export default function PlaygroundPage() {
                     {prop.name}
                     {prop.description && (
                       <span style={{ 
-                        fontWeight: typography.fontWeight.normal,
+                        fontWeight: typography.fontWeight.regular,
                         color: c.text.muted,
                         marginLeft: spacing[1],
                       }}>
