@@ -64,20 +64,21 @@ const componentCategories: { name: string; slugs: string[] }[] = [
   { name: "Overlays", slugs: ["dialog", "bottom-sheet", "tooltip"] },
 ];
 
-// Screen templates
+// Screen templates - Comprehensive library for designers
 const screenTemplates: ScreenTemplate[] = [
+  // === CORE SCREENS ===
   {
     id: "wallet-home",
     name: "Wallet Home",
     description: "Main wallet screen with balance and tokens",
     icon: <Wallet size={20} />,
     items: [
-      { slug: "hub-header", props: { balance: "$12,450.00", label: "Total Balance" } },
+      { slug: "hub-header", props: { balance: "$12,450.00", label: "Total Balance", primaryAction: "Add funds", secondaryAction: "Buy" } },
       { slug: "section-header", props: { title: "Tokens", action: "See all" } },
       { slug: "token-cell", props: { symbol: "ETH", name: "Ethereum", balance: "2.45", value: "$4,890.00", change: "+5.2%", changePositive: true } },
       { slug: "token-cell", props: { symbol: "USDC", name: "USD Coin", balance: "5,000", value: "$5,000.00", change: "+0.01%", changePositive: true } },
       { slug: "token-cell", props: { symbol: "MATIC", name: "Polygon", balance: "1,250", value: "$1,125.00", change: "-2.3%", changePositive: false } },
-      { slug: "footer-nav" },
+      { slug: "footer-nav", props: { activeTab: "wallet" } },
     ],
   },
   {
@@ -89,10 +90,80 @@ const screenTemplates: ScreenTemplate[] = [
       { slug: "page-header", props: { title: "Ethereum", showBack: true } },
       { slug: "hub-header", props: { balance: "$4,890.00", label: "2.45 ETH", primaryAction: "Send", secondaryAction: "Receive" } },
       { slug: "section-header", props: { title: "Activity" } },
-      { slug: "transaction-cell", props: { type: "receive", status: "confirmed", amount: "+0.5 ETH", value: "$1,000.00" } },
-      { slug: "transaction-cell", props: { type: "send", status: "confirmed", amount: "-0.25 ETH", value: "$500.00" } },
+      { slug: "transaction-cell", props: { type: "receive", status: "confirmed", amount: "+0.5 ETH", value: "$1,000.00", timestamp: "2 hours ago" } },
+      { slug: "transaction-cell", props: { type: "send", status: "confirmed", amount: "-0.25 ETH", value: "$500.00", timestamp: "Yesterday" } },
+      { slug: "transaction-cell", props: { type: "swap", status: "confirmed", amount: "ETH → USDC", value: "$200.00", timestamp: "3 days ago" } },
     ],
   },
+  
+  // === SEND FLOW ===
+  {
+    id: "send-amount",
+    name: "Send - Amount",
+    description: "Enter amount to send",
+    icon: <ArrowLeftRight size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Send", showBack: true, action: "Cancel" } },
+      { slug: "amount-input", props: { value: "0.5", token: "ETH", fiatValue: "$1,000.00", balance: "2.45", showMax: true } },
+      { slug: "button", props: { label: "Next", variant: "primary", fullWidth: true } },
+    ],
+  },
+  {
+    id: "send-recipient",
+    name: "Send - Recipient",
+    description: "Enter recipient address",
+    icon: <ArrowLeftRight size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Send to", showBack: true } },
+      { slug: "input", props: { placeholder: "Enter address or ENS name", label: "Recipient" } },
+      { slug: "section-header", props: { title: "Recent" } },
+      { slug: "list-item", props: { title: "vitalik.eth", subtitle: "0x1234...5678", showChevron: false } },
+      { slug: "list-item", props: { title: "0xabcd...ef01", subtitle: "Last sent 3 days ago", showChevron: false } },
+    ],
+  },
+  {
+    id: "send-confirm",
+    name: "Send - Confirm",
+    description: "Review and confirm transaction",
+    icon: <ArrowLeftRight size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Confirm Send", showBack: true } },
+      { slug: "confirmation-sheet", props: { title: "Send ETH", amount: "0.5 ETH", recipient: "vitalik.eth", fee: "$2.50", total: "$1,002.50" } },
+      { slug: "gas-fee-selector", props: { selected: "medium", lowFee: "$1.20", mediumFee: "$2.50", highFee: "$5.00" } },
+      { slug: "button", props: { label: "Confirm & Send", variant: "primary", fullWidth: true } },
+    ],
+  },
+  
+  // === RECEIVE ===
+  {
+    id: "receive",
+    name: "Receive",
+    description: "QR code to receive tokens",
+    icon: <Wallet size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Receive", showBack: true } },
+      { slug: "qr-code", props: { value: "0x1234567890abcdef1234567890abcdef12345678", size: "lg", showValue: true } },
+      { slug: "address-display", props: { address: "0x1234567890abcdef1234567890abcdef12345678", truncate: true, showCopy: true } },
+      { slug: "button", props: { label: "Share Address", variant: "secondary", fullWidth: true } },
+    ],
+  },
+  
+  // === SWAP ===
+  {
+    id: "swap",
+    name: "Swap",
+    description: "Token swap interface",
+    icon: <ArrowLeftRight size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Swap", showBack: true } },
+      { slug: "amount-input", props: { value: "1.0", token: "ETH", fiatValue: "$2,000.00", balance: "2.45", showMax: true } },
+      { slug: "amount-input", props: { value: "2,000", token: "USDC", fiatValue: "$2,000.00", balance: "5,000" } },
+      { slug: "swap-preview", props: { fromToken: "ETH", fromAmount: "1.0", toToken: "USDC", toAmount: "2,000", rate: "1 ETH = 2,000 USDC", fee: "$5.00" } },
+      { slug: "button", props: { label: "Review Swap", variant: "primary", fullWidth: true } },
+    ],
+  },
+  
+  // === SETTINGS ===
   {
     id: "settings",
     name: "Settings",
@@ -106,8 +177,31 @@ const screenTemplates: ScreenTemplate[] = [
       { slug: "section-header", props: { title: "Preferences" } },
       { slug: "list-item", props: { title: "Notifications", subtitle: "Push, email alerts", showChevron: true } },
       { slug: "list-item", props: { title: "Currency", subtitle: "USD", showChevron: true } },
+      { slug: "list-item", props: { title: "Networks", subtitle: "Manage networks", showChevron: true } },
+      { slug: "section-header", props: { title: "Support" } },
+      { slug: "list-item", props: { title: "Help Center", showChevron: true } },
+      { slug: "list-item", props: { title: "About MetaMask", showChevron: true } },
     ],
   },
+  {
+    id: "security-settings",
+    name: "Security Settings",
+    description: "Security and privacy options",
+    icon: <Settings size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Security", showBack: true } },
+      { slug: "banner", props: { title: "Secure your wallet", description: "Enable biometrics for faster, safer access", variant: "info" } },
+      { slug: "list-item", props: { title: "Face ID", subtitle: "Use Face ID to unlock", showChevron: false } },
+      { slug: "list-item", props: { title: "Change Password", showChevron: true } },
+      { slug: "list-item", props: { title: "Show Secret Recovery Phrase", showChevron: true } },
+      { slug: "list-item", props: { title: "Auto-lock Timer", subtitle: "5 minutes", showChevron: true } },
+      { slug: "section-header", props: { title: "Privacy" } },
+      { slug: "list-item", props: { title: "Clear Browser History", showChevron: true } },
+      { slug: "list-item", props: { title: "MetaMetrics", subtitle: "Help improve MetaMask", showChevron: false } },
+    ],
+  },
+  
+  // === ACTIVITY ===
   {
     id: "activity",
     name: "Activity",
@@ -115,22 +209,188 @@ const screenTemplates: ScreenTemplate[] = [
     icon: <Clock size={20} />,
     items: [
       { slug: "page-header", props: { title: "Activity" } },
-      { slug: "tabs", props: { tabs: "All,Sent,Received", activeIndex: 0 } },
-      { slug: "transaction-cell", props: { type: "swap", status: "confirmed", amount: "0.5 ETH → 1000 USDC" } },
-      { slug: "transaction-cell", props: { type: "receive", status: "confirmed", amount: "+1.2 ETH", value: "$2,400.00" } },
-      { slug: "transaction-cell", props: { type: "send", status: "pending", amount: "-500 USDC", value: "$500.00" } },
-      { slug: "transaction-cell", props: { type: "approve", status: "confirmed", amount: "Approve USDC" } },
+      { slug: "tabs", props: { tabs: "All,Sent,Received,Swaps", activeIndex: 0 } },
+      { slug: "section-header", props: { title: "Today" } },
+      { slug: "transaction-cell", props: { type: "swap", status: "confirmed", amount: "0.5 ETH → 1000 USDC", timestamp: "2 hours ago" } },
+      { slug: "transaction-cell", props: { type: "receive", status: "confirmed", amount: "+1.2 ETH", value: "$2,400.00", timestamp: "5 hours ago" } },
+      { slug: "section-header", props: { title: "Yesterday" } },
+      { slug: "transaction-cell", props: { type: "send", status: "confirmed", amount: "-500 USDC", value: "$500.00", timestamp: "Yesterday" } },
+      { slug: "transaction-cell", props: { type: "approve", status: "confirmed", amount: "Approve USDC", timestamp: "Yesterday" } },
+      { slug: "footer-nav", props: { activeTab: "activity" } },
+    ],
+  },
+  
+  // === NETWORK ===
+  {
+    id: "network-select",
+    name: "Network Selection",
+    description: "Choose a network",
+    icon: <Layout size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Select Network", showBack: true } },
+      { slug: "search-bar", props: { placeholder: "Search networks", value: "" } },
+      { slug: "section-header", props: { title: "Popular" } },
+      { slug: "list-item", props: { title: "Ethereum Mainnet", subtitle: "Chain ID: 1", leftIcon: "🔷" } },
+      { slug: "list-item", props: { title: "Polygon", subtitle: "Chain ID: 137", leftIcon: "🟣" } },
+      { slug: "list-item", props: { title: "Arbitrum One", subtitle: "Chain ID: 42161", leftIcon: "🔵" } },
+      { slug: "list-item", props: { title: "Optimism", subtitle: "Chain ID: 10", leftIcon: "🔴" } },
+      { slug: "section-header", props: { title: "Test Networks" } },
+      { slug: "list-item", props: { title: "Sepolia", subtitle: "Chain ID: 11155111", leftIcon: "🟡" } },
+    ],
+  },
+  
+  // === DAPP CONNECTION ===
+  {
+    id: "dapp-connect",
+    name: "Connect dApp",
+    description: "Approve dApp connection",
+    icon: <Layout size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Connect", showBack: true } },
+      { slug: "wallet-connect-session", props: { dappName: "Uniswap", dappUrl: "app.uniswap.org", connected: false, network: "Ethereum" } },
+      { slug: "section-header", props: { title: "Permissions Requested" } },
+      { slug: "list-item", props: { title: "View your wallet address", leftIcon: "👁️", showChevron: false } },
+      { slug: "list-item", props: { title: "Request transaction approval", leftIcon: "✍️", showChevron: false } },
+      { slug: "button", props: { label: "Connect", variant: "primary", fullWidth: true } },
+      { slug: "button", props: { label: "Reject", variant: "secondary", fullWidth: true } },
     ],
   },
   {
+    id: "connected-dapps",
+    name: "Connected dApps",
+    description: "Manage dApp connections",
+    icon: <Layout size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Connected Sites", showBack: true } },
+      { slug: "wallet-connect-session", props: { dappName: "Uniswap", dappUrl: "app.uniswap.org", connected: true, network: "Ethereum" } },
+      { slug: "wallet-connect-session", props: { dappName: "OpenSea", dappUrl: "opensea.io", connected: true, network: "Ethereum" } },
+      { slug: "wallet-connect-session", props: { dappName: "Aave", dappUrl: "app.aave.com", connected: true, network: "Polygon" } },
+      { slug: "empty-state", props: { title: "Manage connections", description: "Tap a site to disconnect or view details" } },
+    ],
+  },
+  
+  // === NFTs ===
+  {
+    id: "nft-gallery",
+    name: "NFT Gallery",
+    description: "NFT collection view",
+    icon: <Star size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "NFTs" } },
+      { slug: "tabs", props: { tabs: "Collected,Created,Hidden", activeIndex: 0 } },
+      { slug: "nft-card", props: { name: "Bored Ape #1234", collection: "BAYC", price: "50 ETH" } },
+      { slug: "nft-card", props: { name: "Azuki #5678", collection: "Azuki", price: "15 ETH" } },
+      { slug: "footer-nav", props: { activeTab: "wallet" } },
+    ],
+  },
+  
+  // === STATES ===
+  {
     id: "empty",
     name: "Empty State",
-    description: "Onboarding or empty content",
+    description: "No content placeholder",
     icon: <Sparkles size={20} />,
     items: [
       { slug: "page-header", props: { title: "NFTs" } },
       { slug: "empty-state", props: { title: "No NFTs yet", description: "Your NFT collection will appear here", actionLabel: "Browse OpenSea" } },
-      { slug: "footer-nav" },
+      { slug: "footer-nav", props: { activeTab: "wallet" } },
+    ],
+  },
+  {
+    id: "success",
+    name: "Success State",
+    description: "Transaction success screen",
+    icon: <Sparkles size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Success", action: "Done" } },
+      { slug: "status-indicator", props: { status: "confirmed", label: "Transaction Confirmed", showPulse: false } },
+      { slug: "transaction-cell", props: { type: "send", status: "confirmed", amount: "-0.5 ETH", value: "$1,000.00" } },
+      { slug: "button", props: { label: "View on Explorer", variant: "secondary", fullWidth: true } },
+      { slug: "button", props: { label: "Done", variant: "primary", fullWidth: true } },
+    ],
+  },
+  {
+    id: "error",
+    name: "Error State",
+    description: "Transaction failed screen",
+    icon: <Sparkles size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Failed", showBack: true } },
+      { slug: "status-indicator", props: { status: "failed", label: "Transaction Failed" } },
+      { slug: "banner", props: { title: "Insufficient funds", description: "You don't have enough ETH to cover gas fees", variant: "error" } },
+      { slug: "button", props: { label: "Try Again", variant: "primary", fullWidth: true } },
+      { slug: "button", props: { label: "Cancel", variant: "secondary", fullWidth: true } },
+    ],
+  },
+  {
+    id: "pending",
+    name: "Pending State",
+    description: "Transaction pending screen",
+    icon: <Clock size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Pending" } },
+      { slug: "status-indicator", props: { status: "pending", label: "Transaction Pending", showPulse: true } },
+      { slug: "transaction-cell", props: { type: "send", status: "pending", amount: "-0.5 ETH", value: "$1,000.00" } },
+      { slug: "progress-bar", props: { progress: 60, variant: "primary" } },
+      { slug: "button", props: { label: "Speed Up", variant: "secondary", fullWidth: true } },
+      { slug: "button", props: { label: "Cancel Transaction", variant: "danger", fullWidth: true } },
+    ],
+  },
+  
+  // === ONBOARDING ===
+  {
+    id: "onboarding-welcome",
+    name: "Onboarding - Welcome",
+    description: "First screen of onboarding",
+    icon: <Sparkles size={20} />,
+    items: [
+      { slug: "empty-state", props: { title: "Welcome to MetaMask", description: "The crypto wallet trusted by millions", actionLabel: "Get Started" } },
+      { slug: "button", props: { label: "Create New Wallet", variant: "primary", fullWidth: true } },
+      { slug: "button", props: { label: "Import Existing Wallet", variant: "secondary", fullWidth: true } },
+    ],
+  },
+  {
+    id: "onboarding-secure",
+    name: "Onboarding - Secure",
+    description: "Security setup step",
+    icon: <Sparkles size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Secure Your Wallet", showBack: true } },
+      { slug: "stepper", props: { steps: "Create,Secure,Confirm", current: 1 } },
+      { slug: "banner", props: { title: "Why backup?", description: "Your Secret Recovery Phrase is the ONLY way to recover your wallet if you lose access", variant: "warning" } },
+      { slug: "button", props: { label: "Start Backup", variant: "primary", fullWidth: true } },
+      { slug: "button", props: { label: "Remind Me Later", variant: "secondary", fullWidth: true } },
+    ],
+  },
+  
+  // === NOTIFICATIONS ===
+  {
+    id: "notifications",
+    name: "Notifications",
+    description: "Notification center",
+    icon: <Bell size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Notifications", showBack: true, action: "Mark all read" } },
+      { slug: "section-header", props: { title: "New" } },
+      { slug: "notification-cell", props: { title: "Transaction Complete", message: "Your swap of 1 ETH for 2000 USDC is complete", timestamp: "2m ago", type: "success", unread: true } },
+      { slug: "notification-cell", props: { title: "Price Alert", message: "ETH is up 5% in the last hour", timestamp: "1h ago", type: "info", unread: true } },
+      { slug: "section-header", props: { title: "Earlier" } },
+      { slug: "notification-cell", props: { title: "Security Reminder", message: "Backup your Secret Recovery Phrase", timestamp: "1d ago", type: "warning", unread: false } },
+      { slug: "notification-cell", props: { title: "New Feature", message: "Swaps now available on Polygon", timestamp: "3d ago", type: "info", unread: false } },
+    ],
+  },
+  
+  // === BROWSER ===
+  {
+    id: "browser",
+    name: "Browser",
+    description: "In-app browser with dApp",
+    icon: <Layout size={20} />,
+    items: [
+      { slug: "page-header", props: { title: "Uniswap", showBack: true, action: "..." } },
+      { slug: "chain-badge", props: { chain: "Ethereum", showName: true } },
+      { slug: "banner", props: { title: "Connected", description: "This site can see your address and request transactions", variant: "info" } },
+      { slug: "footer-nav", props: { activeTab: "browser" } },
     ],
   },
 ];
