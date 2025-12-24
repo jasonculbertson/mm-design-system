@@ -42,6 +42,19 @@ const components = [
   { name: "Section Header", slug: "section-header" },
   { name: "List Item", slug: "list-item" },
   { name: "Transaction Cell", slug: "transaction-cell" },
+  // Wallet-specific components
+  { name: "Amount Input", slug: "amount-input" },
+  { name: "Address Display", slug: "address-display" },
+  { name: "QR Code", slug: "qr-code" },
+  { name: "Gas Fee Selector", slug: "gas-fee-selector" },
+  { name: "Confirmation Sheet", slug: "confirmation-sheet" },
+  { name: "Swap Preview", slug: "swap-preview" },
+  { name: "Wallet Connect", slug: "wallet-connect-session" },
+  { name: "NFT Card", slug: "nft-card" },
+  { name: "Status Indicator", slug: "status-indicator" },
+  { name: "Stepper", slug: "stepper" },
+  { name: "Notification Cell", slug: "notification-cell" },
+  { name: "Chain Badge", slug: "chain-badge" },
 ];
 
 const primitives = [

@@ -4709,6 +4709,1016 @@ export function BaseFooterNav({
   );
 }
 
+// =============================================================================
+// WALLET-SPECIFIC COMPONENTS (for screen templates)
+// =============================================================================
+
+// Amount Input - Crypto amount entry with token selector
+export function AmountInput({
+  value = "0.0",
+  token = "ETH",
+  fiatValue = "$0.00",
+  balance = "0.00",
+  showMax = true,
+  disabled = false,
+}: {
+  value?: string;
+  token?: string;
+  fiatValue?: string;
+  balance?: string;
+  showMax?: boolean;
+  disabled?: boolean;
+}) {
+  const c = useColors();
+
+  return (
+    <div
+      style={{
+        background: c.background.section,
+        borderRadius: radius.xl,
+        padding: spacing[4],
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      {/* Token selector and amount */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: spacing[2] }}>
+        <div style={{ display: "flex", alignItems: "center", gap: spacing[2] }}>
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: radius.full,
+              background: c.primary.muted,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span style={{ fontSize: typography.fontSize.sm, fontWeight: typography.fontWeight.semibold, color: c.primary.default }}>
+              {token.charAt(0)}
+            </span>
+          </div>
+          <span style={{ fontSize: typography.fontSize.base, fontWeight: typography.fontWeight.medium, color: c.text.default }}>
+            {token}
+          </span>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill={c.text.alternative}>
+            <path d="M7 10l5 5 5-5H7z" />
+          </svg>
+        </div>
+        <span
+          style={{
+            fontSize: typography.fontSize["2xl"],
+            fontWeight: typography.fontWeight.semibold,
+            color: disabled ? c.text.muted : c.text.default,
+          }}
+        >
+          {value}
+        </span>
+      </div>
+
+      {/* Fiat value and balance */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>{fiatValue}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: spacing[2] }}>
+          <span style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>
+            Balance: {balance} {token}
+          </span>
+          {showMax && (
+            <button
+              style={{
+                background: c.primary.muted,
+                color: c.primary.default,
+                border: "none",
+                borderRadius: radius.sm,
+                padding: `${spacing[0.5]}px ${spacing[2]}px`,
+                fontSize: typography.fontSize.xs,
+                fontWeight: typography.fontWeight.medium,
+                cursor: "pointer",
+              }}
+            >
+              Max
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Confirmation Sheet - Transaction confirmation details
+export function ConfirmationSheet({
+  title = "Confirm Transaction",
+  amount = "0.5 ETH",
+  recipient = "0x1234...5678",
+  fee = "$2.50",
+  total = "$1,002.50",
+}: {
+  title?: string;
+  amount?: string;
+  recipient?: string;
+  fee?: string;
+  total?: string;
+}) {
+  const c = useColors();
+
+  const Row = ({ label, value, isTotal = false }: { label: string; value: string; isTotal?: boolean }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: `${spacing[3]}px 0` }}>
+      <span style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>{label}</span>
+      <span
+        style={{
+          fontSize: isTotal ? typography.fontSize.lg : typography.fontSize.sm,
+          fontWeight: isTotal ? typography.fontWeight.semibold : typography.fontWeight.medium,
+          color: c.text.default,
+        }}
+      >
+        {value}
+      </span>
+    </div>
+  );
+
+  return (
+    <div
+      style={{
+        background: c.background.section,
+        borderRadius: radius.xl,
+        padding: spacing[4],
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      <div style={{ marginBottom: spacing[3] }}>
+        <span style={{ fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: c.text.default }}>
+          {title}
+        </span>
+      </div>
+
+      <Row label="Amount" value={amount} />
+      <div style={{ borderTop: `1px solid ${c.border.muted}` }} />
+      <Row label="To" value={recipient} />
+      <div style={{ borderTop: `1px solid ${c.border.muted}` }} />
+      <Row label="Network fee" value={fee} />
+      <div style={{ borderTop: `1px solid ${c.border.muted}` }} />
+      <Row label="Total" value={total} isTotal />
+    </div>
+  );
+}
+
+// Gas Fee Selector - Gas fee picker
+export function GasFeeSelector({
+  selected = "medium",
+  lowFee = "$0.50",
+  mediumFee = "$1.00",
+  highFee = "$2.50",
+  showCustom = false,
+}: {
+  selected?: "low" | "medium" | "high" | "custom";
+  lowFee?: string;
+  mediumFee?: string;
+  highFee?: string;
+  showCustom?: boolean;
+}) {
+  const c = useColors();
+
+  const options = [
+    { id: "low", label: "Low", time: "~5 min", fee: lowFee },
+    { id: "medium", label: "Medium", time: "~2 min", fee: mediumFee },
+    { id: "high", label: "High", time: "~30 sec", fee: highFee },
+  ];
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      <div style={{ display: "flex", gap: spacing[2] }}>
+        {options.map((option) => {
+          const isSelected = selected === option.id;
+          return (
+            <div
+              key={option.id}
+              style={{
+                flex: 1,
+                background: isSelected ? c.primary.muted : c.background.section,
+                border: `2px solid ${isSelected ? c.primary.default : "transparent"}`,
+                borderRadius: radius.xl,
+                padding: spacing[3],
+                cursor: "pointer",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ fontSize: typography.fontSize.sm, fontWeight: typography.fontWeight.medium, color: c.text.default, marginBottom: spacing[1] }}>
+                {option.label}
+              </div>
+              <div style={{ fontSize: typography.fontSize.xs, color: c.text.alternative, marginBottom: spacing[1] }}>
+                {option.time}
+              </div>
+              <div style={{ fontSize: typography.fontSize.sm, fontWeight: typography.fontWeight.semibold, color: c.text.default }}>
+                {option.fee}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {showCustom && (
+        <button
+          style={{
+            width: "100%",
+            marginTop: spacing[3],
+            background: "transparent",
+            border: `1px solid ${c.border.muted}`,
+            borderRadius: radius.lg,
+            padding: spacing[3],
+            color: c.text.alternative,
+            fontSize: typography.fontSize.sm,
+            cursor: "pointer",
+          }}
+        >
+          Custom
+        </button>
+      )}
+    </div>
+  );
+}
+
+// QR Code - Display QR code for addresses
+export function QRCodeDisplay({
+  value = "0x1234567890abcdef",
+  size = "md",
+  showValue = true,
+}: {
+  value?: string;
+  size?: "sm" | "md" | "lg";
+  showValue?: boolean;
+}) {
+  const c = useColors();
+  const sizes = { sm: 120, md: 180, lg: 240 };
+  const qrSize = sizes[size];
+
+  // Simple QR code placeholder pattern
+  const generatePattern = () => {
+    const cells = [];
+    const gridSize = 21;
+    const cellSize = qrSize / gridSize;
+    
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        // Create finder patterns in corners
+        const isFinderArea = 
+          (row < 7 && col < 7) || 
+          (row < 7 && col >= gridSize - 7) || 
+          (row >= gridSize - 7 && col < 7);
+        
+        // Random data pattern (deterministic based on position + value)
+        const hash = (value.charCodeAt(row % value.length) + col * row) % 3;
+        const isFilled = isFinderArea ? 
+          ((row < 7 && col < 7) && (row === 0 || row === 6 || col === 0 || col === 6 || (row >= 2 && row <= 4 && col >= 2 && col <= 4))) ||
+          ((row < 7 && col >= gridSize - 7) && (row === 0 || row === 6 || col === gridSize - 1 || col === gridSize - 7 || (row >= 2 && row <= 4 && col >= gridSize - 5 && col <= gridSize - 3))) ||
+          ((row >= gridSize - 7 && col < 7) && (row === gridSize - 1 || row === gridSize - 7 || col === 0 || col === 6 || (row >= gridSize - 5 && row <= gridSize - 3 && col >= 2 && col <= 4)))
+          : hash === 0;
+
+        if (isFilled) {
+          cells.push(
+            <rect
+              key={`${row}-${col}`}
+              x={col * cellSize}
+              y={row * cellSize}
+              width={cellSize}
+              height={cellSize}
+              fill={c.text.default}
+            />
+          );
+        }
+      }
+    }
+    return cells;
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: spacing[4],
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      <div
+        style={{
+          background: colors.static.white,
+          borderRadius: radius.xl,
+          padding: spacing[4],
+        }}
+      >
+        <svg width={qrSize} height={qrSize} viewBox={`0 0 ${qrSize} ${qrSize}`}>
+          {generatePattern()}
+        </svg>
+      </div>
+      {showValue && (
+        <span
+          style={{
+            fontSize: typography.fontSize.xs,
+            color: c.text.alternative,
+            fontFamily: typography.fontFamily.mono,
+            maxWidth: qrSize + spacing[8],
+            textAlign: "center",
+            wordBreak: "break-all",
+          }}
+        >
+          {value}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// Address Display - Address with copy button
+export function AddressDisplay({
+  address = "0x1234567890abcdef1234567890abcdef12345678",
+  truncate = true,
+  showCopy = true,
+  variant = "default",
+}: {
+  address?: string;
+  truncate?: boolean;
+  showCopy?: boolean;
+  variant?: "default" | "compact" | "full";
+}) {
+  const c = useColors();
+  const [copied, setCopied] = useState(false);
+
+  const displayAddress = truncate && variant !== "full"
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : address;
+
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (variant === "compact") {
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: spacing[2], fontFamily: typography.fontFamily.sans }}>
+        <span style={{ fontSize: typography.fontSize.sm, color: c.text.alternative, fontFamily: typography.fontFamily.mono }}>
+          {displayAddress}
+        </span>
+        {showCopy && (
+          <button
+            onClick={handleCopy}
+            style={{ background: "transparent", border: "none", padding: 0, cursor: "pointer", display: "flex" }}
+          >
+            <svg width={16} height={16} viewBox="0 0 24 24" fill={copied ? c.success.default : c.text.alternative}>
+              {copied ? (
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+              ) : (
+                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+              )}
+            </svg>
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        background: c.background.section,
+        borderRadius: radius.lg,
+        padding: `${spacing[3]}px ${spacing[4]}px`,
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      <span
+        style={{
+          fontSize: typography.fontSize.sm,
+          color: c.text.default,
+          fontFamily: typography.fontFamily.mono,
+          wordBreak: variant === "full" ? "break-all" : undefined,
+        }}
+      >
+        {displayAddress}
+      </span>
+      {showCopy && (
+        <button
+          onClick={handleCopy}
+          style={{
+            background: c.background.subsection,
+            border: "none",
+            borderRadius: radius.sm,
+            padding: spacing[2],
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: spacing[1],
+          }}
+        >
+          <svg width={16} height={16} viewBox="0 0 24 24" fill={copied ? c.success.default : c.text.alternative}>
+            {copied ? (
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+            ) : (
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+            )}
+          </svg>
+          <span style={{ fontSize: typography.fontSize.xs, color: copied ? c.success.default : c.text.alternative }}>
+            {copied ? "Copied!" : "Copy"}
+          </span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Swap Preview - Swap rate and fee preview
+export function SwapPreview({
+  fromToken = "ETH",
+  fromAmount = "1.0",
+  toToken = "USDC",
+  toAmount = "2,000",
+  rate = "1 ETH = 2,000 USDC",
+  fee = "$5.00",
+}: {
+  fromToken?: string;
+  fromAmount?: string;
+  toToken?: string;
+  toAmount?: string;
+  rate?: string;
+  fee?: string;
+}) {
+  const c = useColors();
+
+  return (
+    <div
+      style={{
+        background: c.background.section,
+        borderRadius: radius.xl,
+        padding: spacing[4],
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      {/* Swap summary */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: spacing[3], marginBottom: spacing[4] }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: c.text.default }}>
+            {fromAmount}
+          </div>
+          <div style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>{fromToken}</div>
+        </div>
+        <svg width={24} height={24} viewBox="0 0 24 24" fill={c.text.alternative}>
+          <path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z" />
+        </svg>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: c.text.default }}>
+            {toAmount}
+          </div>
+          <div style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>{toToken}</div>
+        </div>
+      </div>
+
+      {/* Rate and fee */}
+      <div style={{ borderTop: `1px solid ${c.border.muted}`, paddingTop: spacing[3] }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: spacing[2] }}>
+          <span style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>Rate</span>
+          <span style={{ fontSize: typography.fontSize.sm, color: c.text.default }}>{rate}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>Network fee</span>
+          <span style={{ fontSize: typography.fontSize.sm, color: c.text.default }}>{fee}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Wallet Connect Session - Connected dApp row
+export function WalletConnectSession({
+  dappName = "Uniswap",
+  dappUrl = "app.uniswap.org",
+  connected = true,
+  network = "Ethereum",
+}: {
+  dappName?: string;
+  dappUrl?: string;
+  connected?: boolean;
+  network?: string;
+}) {
+  const c = useColors();
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: spacing[3],
+        background: c.background.section,
+        borderRadius: radius.xl,
+        padding: spacing[4],
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      {/* dApp icon placeholder */}
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: radius.lg,
+          background: c.background.subsection,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.bold, color: c.text.alternative }}>
+          {dappName.charAt(0)}
+        </span>
+      </div>
+
+      {/* dApp info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: spacing[2] }}>
+          <span style={{ fontSize: typography.fontSize.base, fontWeight: typography.fontWeight.medium, color: c.text.default }}>
+            {dappName}
+          </span>
+          {connected && (
+            <div style={{ width: 8, height: 8, borderRadius: radius.full, background: c.success.default }} />
+          )}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: spacing[2] }}>
+          <span style={{ fontSize: typography.fontSize.sm, color: c.text.alternative }}>{dappUrl}</span>
+          <span style={{ fontSize: typography.fontSize.xs, color: c.text.muted }}>• {network}</span>
+        </div>
+      </div>
+
+      {/* Chevron */}
+      <svg width={20} height={20} viewBox="0 0 24 24" fill={c.text.alternative}>
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" />
+      </svg>
+    </div>
+  );
+}
+
+// NFT Card - NFT display card
+export function NFTCard({
+  name = "NFT Name",
+  collection = "Collection",
+  price = "1.5 ETH",
+  showPrice = true,
+}: {
+  name?: string;
+  collection?: string;
+  price?: string;
+  showPrice?: boolean;
+}) {
+  const c = useColors();
+
+  return (
+    <div
+      style={{
+        background: c.background.section,
+        borderRadius: radius.xl,
+        overflow: "hidden",
+        width: "100%",
+        maxWidth: 180,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      {/* Image placeholder */}
+      <div
+        style={{
+          width: "100%",
+          aspectRatio: "1",
+          background: `linear-gradient(135deg, ${c.primary.muted} 0%, ${c.background.subsection} 100%)`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <svg width={48} height={48} viewBox="0 0 24 24" fill={c.text.muted}>
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+        </svg>
+      </div>
+
+      {/* Info */}
+      <div style={{ padding: spacing[3] }}>
+        <div
+          style={{
+            fontSize: typography.fontSize.sm,
+            fontWeight: typography.fontWeight.medium,
+            color: c.text.default,
+            marginBottom: spacing[1],
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {name}
+        </div>
+        <div
+          style={{
+            fontSize: typography.fontSize.xs,
+            color: c.text.alternative,
+            marginBottom: showPrice ? spacing[2] : 0,
+          }}
+        >
+          {collection}
+        </div>
+        {showPrice && (
+          <div style={{ fontSize: typography.fontSize.sm, fontWeight: typography.fontWeight.semibold, color: c.text.default }}>
+            {price}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Status Indicator - Transaction status badge
+export function StatusIndicator({
+  status = "confirmed",
+  label = "Confirmed",
+  showPulse = false,
+}: {
+  status?: "pending" | "confirmed" | "failed" | "processing";
+  label?: string;
+  showPulse?: boolean;
+}) {
+  const c = useColors();
+
+  const statusColors = {
+    pending: c.warning.default,
+    confirmed: c.success.default,
+    failed: c.error.default,
+    processing: c.primary.default,
+  };
+
+  const statusBgColors = {
+    pending: c.warning.muted,
+    confirmed: c.success.muted,
+    failed: c.error.muted,
+    processing: c.primary.muted,
+  };
+
+  const statusIcons = {
+    pending: (
+      <svg width={24} height={24} viewBox="0 0 24 24" fill={statusColors[status]}>
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+      </svg>
+    ),
+    confirmed: (
+      <svg width={24} height={24} viewBox="0 0 24 24" fill={statusColors[status]}>
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+      </svg>
+    ),
+    failed: (
+      <svg width={24} height={24} viewBox="0 0 24 24" fill={statusColors[status]}>
+        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+      </svg>
+    ),
+    processing: (
+      <svg width={24} height={24} viewBox="0 0 24 24" fill={statusColors[status]} style={{ animation: "spin 1s linear infinite" }}>
+        <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" />
+      </svg>
+    ),
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: spacing[4],
+        padding: spacing[6],
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      <div
+        style={{
+          width: 80,
+          height: 80,
+          borderRadius: radius.full,
+          background: statusBgColors[status],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        {showPulse && (
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              borderRadius: radius.full,
+              background: statusBgColors[status],
+              animation: "pulse 2s infinite",
+            }}
+          />
+        )}
+        <div style={{ transform: "scale(2)" }}>{statusIcons[status]}</div>
+      </div>
+      <span
+        style={{
+          fontSize: typography.fontSize.lg,
+          fontWeight: typography.fontWeight.semibold,
+          color: c.text.default,
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+// Stepper - Multi-step progress indicator
+export function Stepper({
+  steps = "Step 1,Step 2,Step 3",
+  current = 0,
+  variant = "default",
+}: {
+  steps?: string;
+  current?: number;
+  variant?: "default" | "compact";
+}) {
+  const c = useColors();
+  const stepArray = steps.split(",").map((s) => s.trim());
+
+  if (variant === "compact") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: spacing[2],
+          fontFamily: typography.fontFamily.sans,
+        }}
+      >
+        {stepArray.map((_, index) => (
+          <div
+            key={index}
+            style={{
+              flex: 1,
+              height: 4,
+              borderRadius: radius.full,
+              background: index <= current ? c.primary.default : c.background.muted,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      {stepArray.map((step, index) => {
+        const isCompleted = index < current;
+        const isCurrent = index === current;
+        const isUpcoming = index > current;
+
+        return (
+          <React.Fragment key={index}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: spacing[2] }}>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: radius.full,
+                  background: isCompleted || isCurrent ? c.primary.default : c.background.muted,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: isCompleted || isCurrent ? c.primary.inverse : c.text.muted,
+                  fontSize: typography.fontSize.sm,
+                  fontWeight: typography.fontWeight.semibold,
+                }}
+              >
+                {isCompleted ? (
+                  <svg width={16} height={16} viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                  </svg>
+                ) : (
+                  index + 1
+                )}
+              </div>
+              <span
+                style={{
+                  fontSize: typography.fontSize.xs,
+                  color: isCurrent ? c.text.default : c.text.alternative,
+                  fontWeight: isCurrent ? typography.fontWeight.medium : typography.fontWeight.regular,
+                  textAlign: "center",
+                  maxWidth: 80,
+                }}
+              >
+                {step}
+              </span>
+            </div>
+            {index < stepArray.length - 1 && (
+              <div
+                style={{
+                  flex: 1,
+                  height: 2,
+                  background: index < current ? c.primary.default : c.background.muted,
+                  marginBottom: spacing[6],
+                }}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+}
+
+// Notification Cell - Notification row
+export function NotificationCell({
+  title = "Notification",
+  message = "Notification message",
+  timestamp = "2m ago",
+  type = "info",
+  unread = false,
+}: {
+  title?: string;
+  message?: string;
+  timestamp?: string;
+  type?: "info" | "success" | "warning" | "error";
+  unread?: boolean;
+}) {
+  const c = useColors();
+
+  const typeColors = {
+    info: c.primary.default,
+    success: c.success.default,
+    warning: c.warning.default,
+    error: c.error.default,
+  };
+
+  const typeBgColors = {
+    info: c.primary.muted,
+    success: c.success.muted,
+    warning: c.warning.muted,
+    error: c.error.muted,
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: spacing[3],
+        padding: spacing[4],
+        background: unread ? c.background.section : "transparent",
+        borderRadius: radius.xl,
+        width: "100%",
+        maxWidth: 373,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      {/* Icon */}
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: radius.full,
+          background: typeBgColors[type],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <svg width={20} height={20} viewBox="0 0 24 24" fill={typeColors[type]}>
+          {type === "success" && <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />}
+          {type === "error" && <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />}
+          {type === "warning" && <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />}
+          {type === "info" && <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />}
+        </svg>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: spacing[1] }}>
+          <span
+            style={{
+              fontSize: typography.fontSize.sm,
+              fontWeight: typography.fontWeight.medium,
+              color: c.text.default,
+            }}
+          >
+            {title}
+          </span>
+          <span style={{ fontSize: typography.fontSize.xs, color: c.text.muted, flexShrink: 0 }}>{timestamp}</span>
+        </div>
+        <p
+          style={{
+            fontSize: typography.fontSize.sm,
+            color: c.text.alternative,
+            margin: 0,
+            lineHeight: `${typography.lineHeight.sm}px`,
+          }}
+        >
+          {message}
+        </p>
+      </div>
+
+      {/* Unread indicator */}
+      {unread && (
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: radius.full,
+            background: c.primary.default,
+            flexShrink: 0,
+            marginTop: spacing[1],
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+// Chain Badge - Network indicator badge
+export function ChainBadge({
+  chain = "Ethereum",
+  showName = true,
+}: {
+  chain?: "Ethereum" | "Polygon" | "Arbitrum" | "Optimism" | "Avalanche" | "BNB" | "Base";
+  showName?: boolean;
+}) {
+  const c = useColors();
+
+  const chainColors: Record<string, string> = {
+    Ethereum: "#627EEA",
+    Polygon: "#8247E5",
+    Arbitrum: "#28A0F0",
+    Optimism: "#FF0420",
+    Avalanche: "#E84142",
+    BNB: "#F0B90B",
+    Base: "#0052FF",
+  };
+
+  const chainColor = chainColors[chain] || c.primary.default;
+
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: spacing[2],
+        background: c.background.section,
+        borderRadius: radius.full,
+        padding: `${spacing[1.5]}px ${spacing[3]}px`,
+        fontFamily: typography.fontFamily.sans,
+      }}
+    >
+      <div
+        style={{
+          width: 16,
+          height: 16,
+          borderRadius: radius.full,
+          background: chainColor,
+        }}
+      />
+      {showName && (
+        <span
+          style={{
+            fontSize: typography.fontSize.sm,
+            fontWeight: typography.fontWeight.medium,
+            color: c.text.default,
+          }}
+        >
+          {chain}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export const componentRegistry: ComponentEntry[] = [
   // Base Components
   {
@@ -5555,6 +6565,221 @@ export const componentRegistry: ComponentEntry[] = [
       { name: "selected", type: "number", default: 0, description: "Selected segment index" },
     ],
     variants: [],
+  },
+
+  // =============================================================================
+  // WALLET-SPECIFIC COMPONENTS
+  // =============================================================================
+
+  {
+    name: "Amount Input",
+    slug: "amount-input",
+    description: "Crypto amount entry with token selector and fiat conversion.",
+    component: AmountInput,
+    defaultProps: { value: "0.0", token: "ETH", fiatValue: "$0.00", balance: "0.00", showMax: true, disabled: false },
+    props: [
+      { name: "value", type: "string", default: "0.0", description: "Amount value" },
+      { name: "token", type: "string", default: "ETH", description: "Token symbol" },
+      { name: "fiatValue", type: "string", default: "$0.00", description: "Fiat equivalent" },
+      { name: "balance", type: "string", default: "0.00", description: "Available balance" },
+      { name: "showMax", type: "boolean", default: true, description: "Show max button" },
+      { name: "disabled", type: "boolean", default: false, description: "Disabled state" },
+    ],
+    variants: [
+      { name: "With Balance", description: "Amount with balance", props: { value: "1.5", token: "ETH", fiatValue: "$3,000.00", balance: "2.45" } },
+      { name: "USDC", description: "USDC token", props: { value: "1000", token: "USDC", fiatValue: "$1,000.00", balance: "5000" } },
+    ],
+  },
+  {
+    name: "Confirmation Sheet",
+    slug: "confirmation-sheet",
+    description: "Transaction confirmation summary with amount, recipient, and fees.",
+    component: ConfirmationSheet,
+    defaultProps: { title: "Confirm Transaction", amount: "0.5 ETH", recipient: "0x1234...5678", fee: "$2.50", total: "$1,002.50" },
+    props: [
+      { name: "title", type: "string", default: "Confirm Transaction", description: "Sheet title" },
+      { name: "amount", type: "string", default: "0.5 ETH", description: "Transaction amount" },
+      { name: "recipient", type: "string", default: "0x1234...5678", description: "Recipient address" },
+      { name: "fee", type: "string", default: "$2.50", description: "Network fee" },
+      { name: "total", type: "string", default: "$1,002.50", description: "Total cost" },
+    ],
+    variants: [
+      { name: "Send ETH", description: "ETH send confirmation", props: { title: "Send ETH", amount: "1.0 ETH", fee: "$5.00", total: "$2,005.00" } },
+    ],
+  },
+  {
+    name: "Gas Fee Selector",
+    slug: "gas-fee-selector",
+    description: "Gas fee picker with low, medium, and high options.",
+    component: GasFeeSelector,
+    defaultProps: { selected: "medium", lowFee: "$0.50", mediumFee: "$1.00", highFee: "$2.50", showCustom: false },
+    props: [
+      { name: "selected", type: "select", default: "medium", options: ["low", "medium", "high", "custom"], description: "Selected gas option" },
+      { name: "lowFee", type: "string", default: "$0.50", description: "Low fee amount" },
+      { name: "mediumFee", type: "string", default: "$1.00", description: "Medium fee amount" },
+      { name: "highFee", type: "string", default: "$2.50", description: "High fee amount" },
+      { name: "showCustom", type: "boolean", default: false, description: "Show custom option" },
+    ],
+    variants: [
+      { name: "Low Selected", description: "Low gas selected", props: { selected: "low" } },
+      { name: "High Selected", description: "High gas selected", props: { selected: "high" } },
+      { name: "With Custom", description: "Show custom option", props: { showCustom: true } },
+    ],
+  },
+  {
+    name: "QR Code",
+    slug: "qr-code",
+    description: "QR code display for wallet addresses.",
+    component: QRCodeDisplay,
+    defaultProps: { value: "0x1234567890abcdef1234567890abcdef12345678", size: "md", showValue: true },
+    props: [
+      { name: "value", type: "string", default: "0x1234567890abcdef1234567890abcdef12345678", description: "Address to encode" },
+      { name: "size", type: "select", default: "md", options: ["sm", "md", "lg"], description: "QR code size" },
+      { name: "showValue", type: "boolean", default: true, description: "Show address below QR" },
+    ],
+    variants: [
+      { name: "Small", description: "Small QR code", props: { size: "sm" } },
+      { name: "Large", description: "Large QR code", props: { size: "lg" } },
+      { name: "No Value", description: "QR only", props: { showValue: false } },
+    ],
+  },
+  {
+    name: "Address Display",
+    slug: "address-display",
+    description: "Wallet address with copy button.",
+    component: AddressDisplay,
+    defaultProps: { address: "0x1234567890abcdef1234567890abcdef12345678", truncate: true, showCopy: true, variant: "default" },
+    props: [
+      { name: "address", type: "string", default: "0x1234567890abcdef1234567890abcdef12345678", description: "Wallet address" },
+      { name: "truncate", type: "boolean", default: true, description: "Truncate address" },
+      { name: "showCopy", type: "boolean", default: true, description: "Show copy button" },
+      { name: "variant", type: "select", default: "default", options: ["default", "compact", "full"], description: "Display variant" },
+    ],
+    variants: [
+      { name: "Compact", description: "Compact inline style", props: { variant: "compact" } },
+      { name: "Full Address", description: "Show full address", props: { variant: "full", truncate: false } },
+    ],
+  },
+  {
+    name: "Swap Preview",
+    slug: "swap-preview",
+    description: "Token swap preview with rate and fee information.",
+    component: SwapPreview,
+    defaultProps: { fromToken: "ETH", fromAmount: "1.0", toToken: "USDC", toAmount: "2,000", rate: "1 ETH = 2,000 USDC", fee: "$5.00" },
+    props: [
+      { name: "fromToken", type: "string", default: "ETH", description: "Source token" },
+      { name: "fromAmount", type: "string", default: "1.0", description: "Source amount" },
+      { name: "toToken", type: "string", default: "USDC", description: "Destination token" },
+      { name: "toAmount", type: "string", default: "2,000", description: "Destination amount" },
+      { name: "rate", type: "string", default: "1 ETH = 2,000 USDC", description: "Exchange rate" },
+      { name: "fee", type: "string", default: "$5.00", description: "Network fee" },
+    ],
+    variants: [
+      { name: "ETH to MATIC", description: "ETH to MATIC swap", props: { fromToken: "ETH", toToken: "MATIC", toAmount: "2,500", rate: "1 ETH = 2,500 MATIC" } },
+    ],
+  },
+  {
+    name: "Wallet Connect Session",
+    slug: "wallet-connect-session",
+    description: "Connected dApp display with connection status.",
+    component: WalletConnectSession,
+    defaultProps: { dappName: "Uniswap", dappUrl: "app.uniswap.org", connected: true, network: "Ethereum" },
+    props: [
+      { name: "dappName", type: "string", default: "Uniswap", description: "dApp name" },
+      { name: "dappUrl", type: "string", default: "app.uniswap.org", description: "dApp URL" },
+      { name: "connected", type: "boolean", default: true, description: "Connection status" },
+      { name: "network", type: "string", default: "Ethereum", description: "Network name" },
+    ],
+    variants: [
+      { name: "OpenSea", description: "OpenSea connection", props: { dappName: "OpenSea", dappUrl: "opensea.io" } },
+      { name: "Disconnected", description: "Disconnected state", props: { connected: false } },
+    ],
+  },
+  {
+    name: "NFT Card",
+    slug: "nft-card",
+    description: "NFT display card with image, name, and price.",
+    component: NFTCard,
+    defaultProps: { name: "Cool NFT #1234", collection: "Cool Collection", price: "1.5 ETH", showPrice: true },
+    props: [
+      { name: "name", type: "string", default: "Cool NFT #1234", description: "NFT name" },
+      { name: "collection", type: "string", default: "Cool Collection", description: "Collection name" },
+      { name: "price", type: "string", default: "1.5 ETH", description: "NFT price" },
+      { name: "showPrice", type: "boolean", default: true, description: "Show price" },
+    ],
+    variants: [
+      { name: "BAYC", description: "Bored Ape", props: { name: "Bored Ape #1234", collection: "BAYC", price: "50 ETH" } },
+      { name: "No Price", description: "Without price", props: { showPrice: false } },
+    ],
+  },
+  {
+    name: "Status Indicator",
+    slug: "status-indicator",
+    description: "Transaction status indicator with icon and label.",
+    component: StatusIndicator,
+    defaultProps: { status: "confirmed", label: "Transaction Confirmed", showPulse: false },
+    props: [
+      { name: "status", type: "select", default: "confirmed", options: ["pending", "confirmed", "failed", "processing"], description: "Status type" },
+      { name: "label", type: "string", default: "Transaction Confirmed", description: "Status label" },
+      { name: "showPulse", type: "boolean", default: false, description: "Show pulse animation" },
+    ],
+    variants: [
+      { name: "Pending", description: "Pending transaction", props: { status: "pending", label: "Transaction Pending", showPulse: true } },
+      { name: "Failed", description: "Failed transaction", props: { status: "failed", label: "Transaction Failed" } },
+      { name: "Processing", description: "Processing transaction", props: { status: "processing", label: "Processing...", showPulse: true } },
+    ],
+  },
+  {
+    name: "Stepper",
+    slug: "stepper",
+    description: "Multi-step progress indicator.",
+    component: Stepper,
+    defaultProps: { steps: "Connect,Approve,Confirm", current: 0, variant: "default" },
+    props: [
+      { name: "steps", type: "string", default: "Connect,Approve,Confirm", description: "Comma-separated step labels" },
+      { name: "current", type: "number", default: 0, description: "Current step index (0-based)" },
+      { name: "variant", type: "select", default: "default", options: ["default", "compact"], description: "Stepper style" },
+    ],
+    variants: [
+      { name: "Step 2", description: "Second step active", props: { current: 1 } },
+      { name: "Completed", description: "All steps completed", props: { current: 3 } },
+      { name: "Compact", description: "Compact bar style", props: { variant: "compact" } },
+    ],
+  },
+  {
+    name: "Notification Cell",
+    slug: "notification-cell",
+    description: "In-app notification row with type and timestamp.",
+    component: NotificationCell,
+    defaultProps: { title: "Transaction Complete", message: "Your transaction has been confirmed", timestamp: "2m ago", type: "success", unread: true },
+    props: [
+      { name: "title", type: "string", default: "Transaction Complete", description: "Notification title" },
+      { name: "message", type: "string", default: "Your transaction has been confirmed", description: "Notification message" },
+      { name: "timestamp", type: "string", default: "2m ago", description: "Time ago" },
+      { name: "type", type: "select", default: "success", options: ["info", "success", "warning", "error"], description: "Notification type" },
+      { name: "unread", type: "boolean", default: true, description: "Unread indicator" },
+    ],
+    variants: [
+      { name: "Error", description: "Error notification", props: { type: "error", title: "Transaction Failed", message: "Insufficient funds" } },
+      { name: "Warning", description: "Warning notification", props: { type: "warning", title: "Price Alert", message: "ETH dropped 5%" } },
+      { name: "Read", description: "Read notification", props: { unread: false } },
+    ],
+  },
+  {
+    name: "Chain Badge",
+    slug: "chain-badge",
+    description: "Network indicator badge with chain color.",
+    component: ChainBadge,
+    defaultProps: { chain: "Ethereum", showName: true },
+    props: [
+      { name: "chain", type: "select", default: "Ethereum", options: ["Ethereum", "Polygon", "Arbitrum", "Optimism", "Avalanche", "BNB", "Base"], description: "Network chain" },
+      { name: "showName", type: "boolean", default: true, description: "Show chain name" },
+    ],
+    variants: [
+      { name: "Polygon", description: "Polygon network", props: { chain: "Polygon" } },
+      { name: "Arbitrum", description: "Arbitrum network", props: { chain: "Arbitrum" } },
+      { name: "Icon Only", description: "Icon without name", props: { showName: false } },
+    ],
   },
 ];
 
