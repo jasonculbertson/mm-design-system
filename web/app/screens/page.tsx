@@ -259,7 +259,7 @@ const screenDefinitions = [
             </div>
           </div>
         </div>
-        <FooterNav activeTab="activity" />
+        <FooterNav activeTab="wallet" />
       </div>
     ),
   },
