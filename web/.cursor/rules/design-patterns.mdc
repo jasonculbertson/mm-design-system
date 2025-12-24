@@ -1,0 +1,122 @@
+---
+description: Design Patterns and Usage Guidelines
+globs: '**/*.{tsx,ts}'
+alwaysApply: true
+---
+
+# MetaMask Design Patterns
+
+## Screen Patterns
+
+### Wallet Home Screen
+**When to use:** Main entry point, balance overview
+**Components:**
+- `HubHeader` - Balance display with primary actions
+- `SectionHeader` - "Tokens" with "See all" action
+- `TokenCell` (list) - Token rows with network badges
+- `FooterNav` - Bottom navigation with Trade button
+
+```
+┌─────────────────────────┐
+│     HubHeader           │
+│   $12,450.00            │
+│   [Add funds] [Buy]     │
+├─────────────────────────┤
+│ Tokens            See > │
+├─────────────────────────┤
+│ 🔷 ETH      $4,890.00   │
+│ 🔵 USDC     $5,000.00   │
+│ 🟣 MATIC    $1,125.00   │
+├─────────────────────────┤
+│ 🏠  🔍  [+]  🕐  🦊     │
+└─────────────────────────┘
+```
+
+### Token Detail Screen
+**When to use:** Single asset view with actions
+**Components:**
+- `PageHeader` - Back button + token name
+- `HubHeader` - Token balance + Send/Receive
+- `SectionHeader` - "Activity"
+- `TransactionCell` (list) - Transaction history
+
+### Send Flow
+**When to use:** Transferring assets
+**Components:**
+- `PageHeader` - "Send" with close
+- `AmountInput` - Token amount entry
+- `AddressDisplay` - Recipient
+- `GasFeeSelector` - Fee options
+- `ConfirmationSheet` - Final confirmation
+
+### Settings Screen
+**When to use:** App configuration
+**Components:**
+- `PageHeader` - "Settings"
+- `SectionHeader` - Category labels
+- `ListItem` (list) - Setting rows with chevrons
+
+## Component Selection Guide
+
+### "Which component should I use?"
+
+| Need | Use | Not |
+|------|-----|-----|
+| Show token balance | `TokenCell` | Custom row |
+| Navigation header | `PageHeader` | Custom header |
+| Section title | `SectionHeader` | Plain text |
+| Toggle setting | `Switch` | Checkbox |
+| User feedback | `Toast` | Alert |
+| Modal content | `BottomSheet` | Dialog (for simple confirms) |
+| Loading state | `Skeleton` | Spinner (unless action) |
+| Form input | `Input` | Native input |
+| Token amount | `AmountInput` | Input |
+
+### Common Mistakes
+
+❌ **Don't:** Create custom token rows
+✅ **Do:** Use `TokenCell` with network badge
+
+❌ **Don't:** Use Dialog for complex content
+✅ **Do:** Use `BottomSheet` for complex content
+
+❌ **Don't:** Mix spacing values
+✅ **Do:** Use `spacing[4]` (16px) as base unit
+
+❌ **Don't:** Use raw colors
+✅ **Do:** Use `useColors()` hook
+
+## Accessibility Requirements
+
+### All Interactive Elements
+- Minimum touch target: 44x44px
+- Visible focus states
+- Meaningful labels
+
+### Color Contrast
+- Text on backgrounds: 4.5:1 minimum
+- Large text: 3:1 minimum
+- Use semantic colors (they're tested)
+
+### Motion
+- Respect reduced motion preferences
+- Keep animations under 300ms
+- Provide static alternatives
+
+## Composition Rules
+
+### Spacing Rhythm
+- Container padding: `spacing[4]` (16px)
+- Between sections: `spacing[6]` (24px)
+- Between list items: `spacing[1]` (4px)
+- Inside cards: `spacing[4]` (16px)
+
+### Visual Hierarchy
+1. Primary action: `c.primary.default`
+2. Secondary action: `c.background.section`
+3. Destructive action: `c.error.default`
+
+### Mobile Viewport
+- Max width: 375px for phone preview
+- Safe area: Consider notch and home indicator
+- Footer nav: Fixed at bottom, outside scroll
