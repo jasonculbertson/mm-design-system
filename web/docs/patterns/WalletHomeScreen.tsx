@@ -42,7 +42,7 @@ export function WalletHomeScreen() {
 
         {/* Token Section */}
         <div style={{ marginTop: spacing[6] }}>
-          <SectionHeader title="Tokens" action="See all" />
+          <SectionHeader title="Tokens" showChevron />
           
           <div style={{ marginTop: spacing[2], display: "flex", flexDirection: "column", gap: spacing[1] }}>
             <TokenCell
