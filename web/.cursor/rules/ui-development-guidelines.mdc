@@ -1,0 +1,163 @@
+---
+description: UI Development Guidelines
+globs: '**/*.{tsx,ts,jsx,js}'
+alwaysApply: true
+---
+
+# MetaMask Design System UI Development Guidelines
+
+## Core Principle
+
+Always prioritize design system components and design tokens over custom implementations.
+
+## Component Hierarchy (STRICT ORDER)
+
+1. **FIRST**: Use components from `@/lib/components`
+2. **SECOND**: Compose existing primitives into new patterns
+3. **LAST RESORT**: Custom components (avoid unless absolutely necessary)
+
+## Required Imports
+
+```tsx
+// Components
+import { 
+  Button, 
+  TokenCell, 
+  HubHeader,
+  FooterNav,
+  // ... other components
+} from "@/lib/components";
+
+// Tokens
+import { 
+  colors, 
+  spacing, 
+  radius, 
+  typography 
+} from "@/lib/tokens";
+
+// For theme-aware colors
+import { useColors } from "@/lib/components";
+```
+
+## Styling Rules (ENFORCE STRICTLY)
+
+### ✅ ALWAYS DO:
+
+- Use `useColors()` hook for theme-aware colors
+- Use design tokens: `spacing[4]`, `radius.lg`, `typography.fontSize.base`
+- Use semantic color tokens: `c.text.default`, `c.background.section`
+- Use inline styles with tokens for React components
+
+### ❌ NEVER SUGGEST:
+
+- Raw color values like `#FFFFFF` or `rgb(255,255,255)`
+- Arbitrary spacing like `padding: 17px`
+- Hardcoded font sizes like `fontSize: 14`
+- Custom colors not in the token system
+
+## Code Pattern Templates
+
+### Basic Component:
+
+```tsx
+import { useColors } from "@/lib/components";
+import { spacing, radius, typography } from "@/lib/tokens";
+
+function MyComponent() {
+  const c = useColors();
+
+  return (
+    <div style={{
+      backgroundColor: c.background.section,
+      padding: spacing[4],
+      borderRadius: radius.lg,
+    }}>
+      <span style={{
+        color: c.text.default,
+        fontSize: typography.fontSize.base,
+        fontWeight: typography.fontWeight.medium,
+      }}>
+        Content
+      </span>
+    </div>
+  );
+}
+```
+
+### Screen Layout:
+
+```tsx
+import { HubHeader, TokenCell, FooterNav, useColors } from "@/lib/components";
+import { spacing } from "@/lib/tokens";
+
+function WalletScreen() {
+  const c = useColors();
+
+  return (
+    <div style={{
+      backgroundColor: c.background.default,
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+    }}>
+      <div style={{ flex: 1, padding: spacing[4] }}>
+        <HubHeader balance="$5,000" />
+        <TokenCell symbol="ETH" name="Ethereum" balance="1.5" />
+      </div>
+      <FooterNav activeTab="wallet" />
+    </div>
+  );
+}
+```
+
+## Component Conversion Guide
+
+| DON'T Use | USE Instead |
+|-----------|-------------|
+| `backgroundColor: '#31333A'` | `backgroundColor: c.background.section` |
+| `padding: 16` | `padding: spacing[4]` |
+| `borderRadius: 12` | `borderRadius: radius.lg` |
+| `fontSize: 14` | `fontSize: typography.fontSize.sm` |
+| `color: 'white'` | `color: c.text.default` |
+
+## Design Token Quick Reference
+
+### Colors (via useColors())
+```tsx
+c.background.default    // Main background
+c.background.section    // Cards, elevated surfaces
+c.text.default          // Primary text
+c.text.alternative      // Secondary text
+c.primary.default       // Primary actions
+c.error.default         // Error states
+c.success.default       // Success states
+```
+
+### Spacing
+```tsx
+spacing[1]   // 4px
+spacing[2]   // 8px
+spacing[3]   // 12px
+spacing[4]   // 16px
+spacing[6]   // 24px
+spacing[8]   // 32px
+```
+
+### Border Radius
+```tsx
+radius.xs    // 4px
+radius.sm    // 8px
+radius.md    // 12px
+radius.lg    // 16px
+radius.xl    // 24px
+radius.full  // 9999px (circles)
+```
+
+## Enforcement (MANDATORY)
+
+- REJECT any code that uses hardcoded color values
+- REJECT arbitrary pixel values for spacing
+- REQUIRE useColors() for all color usage
+- REQUIRE design tokens for all styling
+- ENFORCE component reuse over custom implementations
