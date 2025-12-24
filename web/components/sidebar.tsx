@@ -84,9 +84,17 @@ const primitives = [
   { name: "Segmented Control", slug: "segmented-control" },
 ];
 
+const toolsPages = [
+  { name: "Screens Gallery", slug: "screens" },
+  { name: "User Flows", slug: "flows" },
+  { name: "AI Prompts", slug: "prompts" },
+  { name: "Playground", slug: "playground" },
+];
+
 export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
   const [foundationsOpen, setFoundationsOpen] = useState(true);
+  const [toolsOpen, setToolsOpen] = useState(true);
   const [baseOpen, setBaseOpen] = useState(true);
   const [componentsOpen, setComponentsOpen] = useState(true);
   const [primitivesOpen, setPrimitivesOpen] = useState(false);
@@ -179,6 +187,40 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
                     <span className="text-[var(--chrome-text-muted)]">→</span>
                     Canvas
                   </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Tools Section */}
+            <div className="mt-4">
+              <button
+                onClick={() => setToolsOpen(!toolsOpen)}
+                className="flex items-center gap-2 w-full px-3 py-2 text-body-sm text-[var(--chrome-text)] hover:text-[var(--chrome-text)] transition-colors"
+              >
+                <span className="text-[var(--color-primary-default)]">★</span>
+                <span className="weight-medium">Tools</span>
+              </button>
+              
+              {toolsOpen && (
+                <div className="mt-1 ml-3">
+                  {toolsPages.map((item) => {
+                    const active = isActive(`/${item.slug}`);
+                    return (
+                      <Link
+                        key={item.slug}
+                        href={`/${item.slug}`}
+                        onClick={onClose}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-body-sm transition-colors ${
+                          active 
+                            ? "bg-[var(--chrome-bg-subtle)] text-[var(--chrome-text)] weight-medium" 
+                            : "text-[var(--chrome-text-muted)] hover:bg-[var(--chrome-bg-subtle)] hover:text-[var(--chrome-text)]"
+                        }`}
+                      >
+                        <span className="text-[var(--chrome-text-muted)]">→</span>
+                        {item.name}
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
