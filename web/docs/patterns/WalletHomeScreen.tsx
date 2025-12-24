@@ -38,7 +38,6 @@ export function WalletHomeScreen() {
           label="Total Balance"
           primaryAction="Add funds"
           secondaryAction="Withdraw"
-          showAvatar
         />
 
         {/* Token Section */}
